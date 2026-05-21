@@ -3062,6 +3062,118 @@ body {
 
 <div class="toast" id="toast"></div>
 <script>
+// ============================================================
+// SUPABASE
+// ============================================================
+const SUPABASE_URL = 'https://ucnjdhtynbpvldvyszjv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbmpkaHR5bmJwdmxkdnlzemp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzODM5MTAsImV4cCI6MjA5NDk1OTkxMH0.xxPrWvCFERMTfGUUnB3bljhd1OnQjVWQm-nYDWYOFho';
+
+const sb = {
+  async get(table, key, keyCol='date') {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${keyCol}=eq.${key}&limit=1`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      const data = await res.json();
+      return data && data.length > 0 ? data[0] : null;
+    } catch(e) { return null; }
+  },
+  async upsert(table, row) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify(row)
+      });
+      return res.ok;
+    } catch(e) { return false; }
+  },
+  async getAll(table) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?order=month_key.asc`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      return await res.json();
+    } catch(e) { return []; }
+  }
+};
+
+async function saveStateRemote() {
+  const today = getToday();
+  const row = {
+    date: today,
+    protein_total: state.proteinTotal,
+    meals: state.meals,
+    whey_extra: state.wheyExtra,
+    supps: state.supps,
+    stress: state.stress,
+    notes: state.notes,
+    sleep_steps: state.sleepSteps,
+    sws_min: state.swsMin,
+    sleep_hrs: state.sleepHrs,
+    updated_at: new Date().toISOString()
+  };
+  await sb.upsert('daily_log', row);
+}
+
+async function loadStateRemote() {
+  const today = getToday();
+  try {
+    const row = await sb.get('daily_log', today, 'date');
+    if (row) {
+      state.proteinTotal = row.protein_total || 0;
+      state.meals = row.meals || {};
+      state.wheyExtra = row.whey_extra || false;
+      state.supps = row.supps || {};
+      state.stress = row.stress || 0;
+      state.notes = row.notes || '';
+      state.sleepSteps = row.sleep_steps || {};
+      state.swsMin = row.sws_min || 73;
+      state.sleepHrs = row.sleep_hrs || 6.8;
+    }
+  } catch(e) { loadState(); return; }
+  renderAll();
+}
+
+async function saveMonthRemote() {
+  const key = getMonthKey(currentMonth);
+  const data = getCurrentData();
+  data.notes = document.getElementById('monthNotes').value;
+  saveAll();
+  const row = {
+    month_key: key,
+    muscle: data.muscle, bf: data.bf, visceral: data.visceral, ffmi: data.ffmi,
+    hrv: data.hrv, rhr: data.rhr, sws: data.sws, recovery: data.recovery,
+    deadlift: data.deadlift, bench: data.bench, row_weight: data.row, ohp: data.ohp,
+    weight: data.weight, notes: data.notes, checks: data.checks || {},
+    updated_at: new Date().toISOString()
+  };
+  const ok = await sb.upsert('monthly_log', row);
+  buildMuscleHistory();
+  updateScores(data);
+  showToastDash(ok ? '✓ Guardado en la nube' : '⚠️ Error al guardar');
+}
+
+async function loadAllRemote() {
+  try {
+    const rows = await sb.getAll('monthly_log');
+    if (rows && rows.length > 0) {
+      rows.forEach(row => {
+        monthData[row.month_key] = {
+          muscle: row.muscle, bf: row.bf, visceral: row.visceral, ffmi: row.ffmi,
+          hrv: row.hrv, rhr: row.rhr, sws: row.sws, recovery: row.recovery,
+          deadlift: row.deadlift, bench: row.bench, row: row.row_weight, ohp: row.ohp,
+          weight: row.weight, notes: row.notes, checks: row.checks || {}
+        };
+      });
+    }
+  } catch(e) { loadAll(); }
+}
+
+
 
 // ============================================================
 // NAVIGATION + DRAWER
@@ -3358,7 +3470,8 @@ function updateWeekMetrics() {
 function saveDay() {
   state.notes = document.getElementById('dailyNotes').value;
   saveState();
-  showToast('✓ Día guardado');
+  saveStateRemote();
+  showToast('✓ Guardado');
 }
 
 // ---- TOAST ----
@@ -3708,12 +3821,7 @@ function nextMonth() {
 
 // ---- SAVE ----
 function saveMonth() {
-  const data = getCurrentData();
-  data.notes = document.getElementById('monthNotes').value;
-  saveAll();
-  buildMuscleHistory();
-  updateScores(data);
-  showToastDash('✓ Mes guardado');
+  saveMonthRemote();
 }
 
 // ---- TOAST ----
@@ -3732,9 +3840,8 @@ function showToastDash(msg) {
 (function initApp() {
   setTopbarDate();
   setDate();
-  loadState();
-  loadAll();
-  renderDash();
+  loadAllRemote().then(() => renderDash());
+  loadStateRemote();
 })();
 
 </script>
