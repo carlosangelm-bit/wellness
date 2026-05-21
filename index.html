@@ -1690,6 +1690,59 @@ body {
 /* Diario page padding */
 #section-diario .page { padding-top: 72px; }
 
+
+/* WEEK CIRCLE NAVIGATOR */
+.week-strip-wrap {
+  display: flex; align-items: center;
+  padding: 14px 16px 8px;
+  gap: 6px;
+}
+.week-strip-arrow {
+  width: 28px; height: 28px; flex-shrink: 0;
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--muted);
+  font-size: 18px; cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.week-strip-arrow:hover { color: var(--text); border-color: var(--border2); }
+.week-strip {
+  flex: 1; display: flex; justify-content: space-between; gap: 4px;
+}
+.day-circle-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 5px; cursor: pointer;
+}
+.day-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--s2); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--muted); transition: all 0.15s;
+  position: relative;
+}
+.day-circle-wrap:hover .day-circle { border-color: var(--border2); color: var(--text); }
+.day-circle.selected {
+  background: var(--green); border-color: var(--green); color: #000;
+}
+.day-circle.today-ring {
+  border-color: var(--green); color: var(--text);
+}
+.day-circle.future { opacity: 0.45; }
+.day-circle.has-data::after {
+  content: '';
+  position: absolute; bottom: 2px; right: 2px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+}
+.day-circle.selected.has-data::after { background: rgba(0,0,0,0.4); }
+.day-circle-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.day-circle-wrap.selected-wrap .day-circle-label { color: var(--green); }
+
 </style>
 </head>
 <body>
@@ -1775,6 +1828,14 @@ body {
 
 <!-- PAGE: HOY -->
 <div class="page active" id="page-hoy">
+
+  <!-- WEEK CIRCLE NAVIGATOR -->
+  <div class="week-strip-wrap">
+    <button class="week-strip-arrow" onclick="shiftWeek(-1)">&#8249;</button>
+    <div class="week-strip" id="weekStrip"></div>
+    <button class="week-strip-arrow" onclick="shiftWeek(1)">&#8250;</button>
+  </div>
+
   <div class="sec-label">registro diario</div>
   <div class="page-title">¿Cómo vas hoy?</div>
 
@@ -3175,6 +3236,130 @@ async function loadAllRemote() {
 
 
 
+
+// ============================================================
+// WEEK CIRCLE NAVIGATOR
+// ============================================================
+let dayOffset = 0;       // 0 = today, negative = past, positive = future
+let weekOffset = 0;      // which week we're viewing (0 = current week)
+
+const DAY_NAMES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+function getOffsetDate(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d;
+}
+
+function getOffsetDateStr(offset) {
+  const d = getOffsetDate(offset);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getTodayForDiary() {
+  return getOffsetDateStr(dayOffset);
+}
+
+// weekOffset=0 means the week containing today
+function buildWeekStrip() {
+  const strip = document.getElementById('weekStrip');
+  if (!strip) return;
+  strip.innerHTML = '';
+
+  // Monday of the week containing (today + weekOffset*7)
+  const anchor = new Date();
+  anchor.setDate(anchor.getDate() + weekOffset * 7);
+  const dow = anchor.getDay(); // 0=Sun
+  const monday = new Date(anchor);
+  monday.setDate(anchor.getDate() - (dow === 0 ? 6 : dow - 1));
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    const isToday  = dateStr === todayStr;
+    const isFuture = dateStr > todayStr;
+    // Compute offset from today
+    const diffMs = d - new Date(todayStr);
+    const diff   = Math.round(diffMs / 86400000);
+    const isSelected = diff === dayOffset;
+    // Check if has saved data
+    const hasLocal = !!localStorage.getItem('wellness_' + dateStr);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'day-circle-wrap' + (isSelected ? ' selected-wrap' : '');
+    wrap.onclick = () => selectDay(diff);
+
+    const circle = document.createElement('div');
+    let cls = 'day-circle';
+    if (isSelected)       cls += ' selected';
+    else if (isToday)     cls += ' today-ring';
+    if (isFuture)         cls += ' future';
+    if (hasLocal && !isSelected) cls += ' has-data';
+    circle.className = cls;
+    circle.textContent = d.getDate();
+
+    const label = document.createElement('div');
+    label.className = 'day-circle-label';
+    label.textContent = DAY_NAMES[d.getDay()];
+
+    wrap.appendChild(circle);
+    wrap.appendChild(label);
+    strip.appendChild(wrap);
+  }
+}
+
+function shiftWeek(delta) {
+  weekOffset += delta;
+  buildWeekStrip();
+}
+
+function selectDay(offset) {
+  dayOffset = offset;
+  // If the selected day is not in current week view, adjust weekOffset
+  const todayDow = new Date().getDay();
+  const mondayOffset = -(todayDow === 0 ? 6 : todayDow - 1);
+  const weekStart = mondayOffset + weekOffset * 7;
+  const weekEnd   = weekStart + 6;
+  if (offset < weekStart || offset > weekEnd) {
+    weekOffset = Math.floor((offset - mondayOffset) / 7);
+  }
+  buildWeekStrip();
+  loadDayData();
+}
+
+async function loadDayData() {
+  const dateStr = getTodayForDiary();
+  state = {
+    proteinTotal: 0, meals: {}, wheyExtra: false,
+    supps: {}, stress: 0, notes: '',
+    sleepSteps: {}, swsMin: 73, sleepHrs: 6.8, weekData: {}
+  };
+  try {
+    const row = await sb.get('daily_log', dateStr, 'date');
+    if (row) {
+      state.proteinTotal = row.protein_total || 0;
+      state.meals        = row.meals || {};
+      state.wheyExtra    = row.whey_extra || false;
+      state.supps        = row.supps || {};
+      state.stress       = row.stress || 0;
+      state.notes        = row.notes || '';
+      state.sleepSteps   = row.sleep_steps || {};
+      state.swsMin       = row.sws_min || 73;
+      state.sleepHrs     = row.sleep_hrs || 6.8;
+    } else {
+      const saved = localStorage.getItem('wellness_' + dateStr);
+      if (saved) { try { state = {...state, ...JSON.parse(saved)}; } catch(e) {} }
+    }
+  } catch(e) {
+    const saved = localStorage.getItem('wellness_' + dateStr);
+    if (saved) { try { state = {...state, ...JSON.parse(saved)}; } catch(e) {} }
+  }
+  renderAll();
+}
+
 // ============================================================
 // NAVIGATION + DRAWER
 // ============================================================
@@ -3299,7 +3484,7 @@ function saveState() {
 }
 
 function getToday() {
-  return new Date().toISOString().split('T')[0];
+  return getTodayForDiary();
 }
 
 // ---- PROTEIN RING ----
@@ -3840,6 +4025,7 @@ function showToastDash(msg) {
 (function initApp() {
   setTopbarDate();
   setDate();
+  buildWeekStrip();
   loadAllRemote().then(() => renderDash());
   loadStateRemote();
 })();
