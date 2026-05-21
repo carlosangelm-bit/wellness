@@ -1,0 +1,3742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness · Carlos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+/* ============================================
+   GLOBAL / SHARED
+   ============================================ */
+:root {
+  --bg: #0a0a0a;
+  --s1: #111111;
+  --s2: #1a1a1a;
+  --s3: #222222;
+  --border: #2a2a2a;
+  --border2: #333;
+  --green: #a8ff57;
+  --green2: #7acc2e;
+  --green-glow: rgba(168,255,87,0.12);
+  --orange: #ff9f43;
+  --orange-dim: rgba(255,159,67,0.12);
+  --blue: #4fc3f7;
+  --blue-dim: rgba(79,195,247,0.12);
+  --red: #ff6b6b;
+  --purple: #b39ddb;
+  --purple-dim: rgba(179,157,219,0.12);
+  --yellow: #fbbf24;
+  --text: #f0f0f0;
+  --muted: #666;
+  --muted2: #444;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   HAMBURGER NAV
+   ============================================ */
+.topbar {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  height: 52px;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+}
+.hamburger {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+.hamburger:hover { border-color: var(--border2); }
+.hamburger span {
+  display: block;
+  width: 16px; height: 1.5px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.topbar-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--green);
+  letter-spacing: -0.02em;
+  flex: 1;
+}
+.topbar-current {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.topbar-date {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* SIDE DRAWER */
+.drawer-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.7);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+.drawer {
+  position: fixed; top:0; left:0; bottom:0; z-index: 160;
+  width: 260px;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.drawer.open { transform: translateX(0); }
+
+.drawer-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.drawer-brand {
+  font-family: 'Syne Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.drawer-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.drawer-nav { padding: 12px 10px; flex: 1; }
+.drawer-section-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 10px 6px;
+}
+.drawer-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+.drawer-item:hover { background: var(--s2); }
+.drawer-item.active {
+  background: var(--green-glow);
+  border-color: rgba(168,255,87,0.2);
+}
+.drawer-item-icon {
+  font-size: 16px;
+  width: 24px; text-align: center;
+  flex-shrink: 0;
+}
+.drawer-item-text {}
+.drawer-item-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+}
+.drawer-item.active .drawer-item-name { color: var(--green); }
+.drawer-item-desc {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.drawer-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ============================================
+   APP SECTIONS
+   ============================================ */
+.app-section {
+  display: none;
+  padding-top: 52px;
+  min-height: 100vh;
+  animation: fadeIn 0.2s ease;
+}
+.app-section.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+
+/* SECTION HEADERS (inside each section) */
+.section-masthead {
+  padding: 24px 24px 0;
+  margin-bottom: 20px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.section-masthead-left {}
+.section-eyebrow {
+  font-family: 'Syne Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.section-headline {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--s2); border: 1px solid var(--green);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 12px; color: var(--green);
+  font-family: 'Syne Mono', monospace;
+  transform: translateY(60px); opacity: 0;
+  transition: all 0.25s; z-index: 999; pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ============================================
+   DIARIO STYLES (scoped)
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #0a0a0a;
+  --s1: #111111;
+  --s2: #1a1a1a;
+  --s3: #222222;
+  --border: #2a2a2a;
+  --border2: #333;
+  --green: #a8ff57;
+  --green2: #7acc2e;
+  --orange: #ff9f43;
+  --blue: #4fc3f7;
+  --red: #ff6b6b;
+  --purple: #b39ddb;
+  --text: #f0f0f0;
+  --muted: #666;
+  --muted2: #444;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 20px;
+  height: 52px;
+}
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--green);
+  letter-spacing: -0.02em;
+  margin-right: 24px;
+  white-space: nowrap;
+}
+.nav-tabs {
+  display: flex; gap: 2px; overflow-x: auto; flex: 1;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: all 0.15s;
+  border: none; background: none;
+}
+.nav-tab:hover { color: var(--text); background: var(--s2); }
+.nav-tab.active { color: var(--green); background: rgba(168,255,87,0.08); }
+
+.date-display {
+  font-family: 'Syne Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* PAGES */
+.page { display: none; padding: 72px 20px 40px; max-width: 800px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* SECTION HEADERS */
+.sec-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-label::after { content: ''; flex:1; height:1px; background: var(--border); }
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  line-height: 1.1;
+}
+
+/* CARDS */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* PROTEIN TRACKER */
+.prot-ring-wrapper {
+  display: flex; align-items: center; gap: 24px;
+  margin-bottom: 16px;
+}
+.prot-ring {
+  position: relative; width: 90px; height: 90px; flex-shrink: 0;
+}
+.prot-ring svg { transform: rotate(-90deg); }
+.prot-ring-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.prot-ring-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--green);
+  line-height: 1;
+}
+.prot-ring-unit {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'Syne Mono', monospace;
+}
+.prot-info { flex: 1; }
+.prot-goal { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.prot-remaining {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--orange);
+}
+
+/* MEAL CHIPS */
+.meal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.meal-chip {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.meal-chip:hover { border-color: var(--border2); }
+.meal-chip.checked {
+  border-color: var(--green);
+  background: rgba(168,255,87,0.05);
+}
+.meal-chip.checked::after {
+  content: '✓';
+  position: absolute; top: 8px; right: 10px;
+  color: var(--green); font-size: 12px; font-weight: 700;
+}
+.meal-chip-name { font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+.meal-chip-prot { font-family: 'Syne Mono', monospace; font-size: 11px; color: var(--green); }
+.meal-chip-cal { font-size: 10px; color: var(--muted); }
+
+/* WHEY BUTTON */
+.whey-btn {
+  width: 100%; padding: 12px;
+  border: 1.5px dashed var(--border2);
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.whey-btn:hover { border-color: var(--green); color: var(--green); }
+.whey-btn.active { border-color: var(--green); color: var(--green); background: rgba(168,255,87,0.05); border-style: solid; }
+
+/* CREATINE TRACKER */
+.supp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.supp-row:last-child { border-bottom: none; }
+.supp-name-wrap { display: flex; flex-direction: column; }
+.supp-name-text { font-weight: 600; font-size: 13px; }
+.supp-timing-text { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.toggle-btn {
+  width: 44px; height: 24px;
+  border-radius: 12px;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-btn.on { background: var(--green); border-color: var(--green); }
+.toggle-btn::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: all 0.2s;
+}
+.toggle-btn.on::after { left: 23px; background: #000; }
+
+/* SLEEP ROUTINE */
+.sleep-steps {
+  display: grid;
+  gap: 8px;
+}
+.sleep-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sleep-step.done {
+  border-color: var(--purple);
+  background: rgba(179,157,219,0.05);
+}
+.sleep-step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.sleep-step.done .sleep-step-num {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #000;
+}
+.sleep-step-content {}
+.sleep-step-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.sleep-step-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.sleep-step-time {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  color: var(--purple);
+  margin-top: 4px;
+}
+.evidence-badge {
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(79,195,247,0.1);
+  color: var(--blue);
+  border: 1px solid rgba(79,195,247,0.2);
+  margin-top: 4px;
+  font-family: 'Syne Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* RESTAURANT GUIDE */
+.rest-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.rest-tab {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.rest-tab:hover { color: var(--text); border-color: var(--border2); }
+.rest-tab.active { background: var(--orange); border-color: var(--orange); color: #000; font-weight: 600; }
+
+.rest-panel { display: none; }
+.rest-panel.active { display: block; }
+
+.menu-section { margin-bottom: 20px; }
+.menu-section-title {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.menu-item {
+  display: flex; align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  background: var(--s2);
+  border: 1px solid transparent;
+  gap: 10px;
+}
+.menu-item.top-pick { border-color: rgba(168,255,87,0.2); }
+.menu-item.avoid-item { background: rgba(255,107,107,0.04); border-color: rgba(255,107,107,0.15); }
+.menu-item-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.top-pick .menu-item-dot { background: var(--green); }
+.avoid-item .menu-item-dot { background: var(--red); }
+.menu-item-name { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.menu-item-why { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.menu-item-stats {
+  margin-left: auto; text-align: right; flex-shrink: 0;
+}
+.menu-item-prot {
+  font-family: 'Syne Mono', monospace;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+.menu-item-cal {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.combo-box {
+  background: rgba(255,159,67,0.08);
+  border: 1px solid rgba(255,159,67,0.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+.combo-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.combo-text { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+.combo-stats { font-family: 'Syne Mono', monospace; font-size: 11px; color: var(--muted); }
+
+/* WEEKLY VIEW */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.week-day {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.week-day.today {
+  border-color: var(--green);
+  background: rgba(168,255,87,0.05);
+}
+.week-day:hover { border-color: var(--border2); }
+.week-day-name {
+  font-family: 'Syne Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.week-day-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.week-dot-row {
+  display: flex; justify-content: center; gap: 3px; flex-wrap: wrap;
+}
+.w-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.w-dot.pesas { background: var(--green); }
+.w-dot.golf { background: var(--blue); }
+.w-dot.padel { background: var(--orange); }
+.w-dot.rest { background: var(--muted2); }
+
+/* PROGRESS BARS */
+.prog-bar-wrap {
+  margin-bottom: 12px;
+}
+.prog-bar-header {
+  display: flex; justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+.prog-bar-label { color: var(--muted); }
+.prog-bar-val { font-family: 'Syne Mono', monospace; color: var(--text); }
+.prog-bar-bg {
+  height: 6px;
+  background: var(--s3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.prog-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* METRICS */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.metric-card {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.metric-val {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.metric-label { font-size: 10px; color: var(--muted); font-family: 'Syne Mono', monospace; letter-spacing: 0.05em; }
+
+/* NOTES */
+.notes-area {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.notes-area:focus { border-color: var(--border2); }
+.notes-area::placeholder { color: var(--muted); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--s2);
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--green);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* SCORE CIRCLE */
+.score-circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+}
+.score-green { background: rgba(168,255,87,0.12); color: var(--green); border: 1.5px solid var(--green); }
+.score-orange { background: rgba(255,159,67,0.12); color: var(--orange); border: 1.5px solid var(--orange); }
+.score-red { background: rgba(255,107,107,0.12); color: var(--red); border: 1.5px solid var(--red); }
+
+/* SAVE BTN */
+.save-btn {
+  width: 100%; padding: 14px;
+  background: var(--green);
+  border: none; border-radius: 10px;
+  color: #000;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.15s;
+}
+.save-btn:hover { background: var(--green2); }
+.save-btn:active { transform: scale(0.99); }
+
+/* STRESS SECTION */
+.stress-scale {
+  display: flex; gap: 6px; margin: 12px 0;
+}
+.stress-btn {
+  flex: 1; padding: 10px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--s2);
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.stress-btn:hover { border-color: var(--border2); color: var(--text); }
+.stress-btn.selected-1, .stress-btn.selected-2, .stress-btn.selected-3 { color: #000; border-color: transparent; }
+.stress-btn.selected-1 { background: var(--green); }
+.stress-btn.selected-2 { background: var(--orange); }
+.stress-btn.selected-3 { background: var(--red); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+
+/* ============================================
+   DASHBOARD STYLES (scoped)
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #070809;
+  --s1: #0e1012;
+  --s2: #141618;
+  --s3: #1c1f22;
+  --border: #252830;
+  --border2: #30343a;
+  --green: #39ff85;
+  --green-dim: rgba(57,255,133,0.12);
+  --orange: #ff8c42;
+  --orange-dim: rgba(255,140,66,0.12);
+  --blue: #38bdf8;
+  --blue-dim: rgba(56,189,248,0.12);
+  --purple: #c084fc;
+  --purple-dim: rgba(192,132,252,0.12);
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --text: #e8eaed;
+  --muted: #5a6070;
+  --muted2: #3a3f4a;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  padding: 28px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.header-left {}
+.brand {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.title span { color: var(--green); }
+.subtitle { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+.month-btn {
+  background: none; border: none;
+  color: var(--muted); cursor: pointer;
+  font-size: 16px; line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.month-btn:hover { color: var(--text); }
+.month-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  min-width: 130px;
+  text-align: center;
+}
+
+/* TIMELINE */
+.timeline-bar {
+  margin: 0 28px 24px;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.tl-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.tl-track {
+  position: relative;
+  height: 4px;
+  background: var(--s3);
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.tl-fill {
+  position: absolute; top:0; left:0; height:100%;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.tl-markers {
+  display: flex;
+  justify-content: space-between;
+}
+.tl-marker {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px;
+}
+.tl-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--s3);
+  border: 1.5px solid var(--border2);
+  margin-top: -18px;
+}
+.tl-dot.reached { background: var(--green); border-color: var(--green); }
+.tl-dot.current { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 8px var(--orange); }
+.tl-m-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  padding: 0 28px 28px;
+}
+
+/* CARDS */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.card.green::before { background: var(--green); }
+.card.orange::before { background: var(--orange); }
+.card.blue::before { background: var(--blue); }
+.card.purple::before { background: var(--purple); }
+.card.yellow::before { background: var(--yellow); }
+
+.card-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* SPANS */
+.span-12 { grid-column: span 12; }
+.span-8 { grid-column: span 8; }
+.span-6 { grid-column: span 6; }
+.span-4 { grid-column: span 4; }
+.span-3 { grid-column: span 3; }
+@media(max-width: 700px) {
+  .span-8, .span-6, .span-4, .span-3 { grid-column: span 12; }
+}
+@media(min-width:701px) and (max-width:900px) {
+  .span-3 { grid-column: span 6; }
+  .span-4 { grid-column: span 6; }
+}
+
+/* KPI BLOCK */
+.kpi-block {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.kpi-item {
+  display: flex; align-items: center; gap: 12px;
+}
+.kpi-meta { flex: 1; min-width: 0; }
+.kpi-name {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kpi-bar-bg {
+  height: 5px;
+  background: var(--s3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.kpi-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.kpi-values {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+.kpi-values .current { font-weight: 700; }
+.kpi-input-wrap {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+}
+.kpi-input {
+  width: 58px;
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 8px;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.kpi-input:focus { border-color: var(--green); }
+.kpi-unit {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+/* STAT CARD */
+.stat-val {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.stat-delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.delta-up { background: var(--green-dim); color: var(--green); }
+.delta-down-good { background: var(--green-dim); color: var(--green); }
+.delta-down-bad { background: rgba(248,113,113,0.12); color: var(--red); }
+.delta-neutral { background: var(--s3); color: var(--muted); }
+
+/* SCORE OVERVIEW */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.score-item {
+  text-align: center;
+  padding: 14px 8px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.score-num {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.score-name { font-size: 10px; color: var(--muted); }
+
+/* PHASE INDICATOR */
+.phase-card {
+  display: flex; align-items: center; gap: 16px;
+}
+.phase-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.phase-info {}
+.phase-name {
+  font-size: 16px; font-weight: 700;
+  margin-bottom: 4px;
+}
+.phase-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.phase-badge {
+  margin-top: 6px;
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+}
+
+/* MONTH HISTORY */
+.history-cols {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.hist-col {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.hist-bar-wrap {
+  width: 100%;
+  height: 80px;
+  display: flex; align-items: flex-end;
+  background: var(--s2);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.hist-bar {
+  width: 100%;
+  border-radius: 4px;
+  transition: height 0.5s ease;
+  min-height: 3px;
+}
+.hist-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+.hist-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* NOTES */
+.month-notes {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-top: 4px;
+}
+.month-notes:focus { border-color: var(--border2); }
+.month-notes::placeholder { color: var(--muted); }
+
+/* SAVE */
+.save-btn {
+  background: var(--green);
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 12px 20px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 12px;
+  transition: opacity 0.15s;
+}
+.save-btn:hover { opacity: 0.9; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--s2);
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--green);
+  font-family: 'Space Mono', monospace;
+  transform: translateY(60px);
+  opacity: 0;
+  transition: all 0.25s;
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* INBODY REMINDER */
+.reminder-box {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(255,140,66,0.25);
+  border-radius: 10px;
+  margin-top: 12px;
+}
+.reminder-icon { font-size: 18px; flex-shrink: 0; }
+.reminder-text { font-size: 12px; color: #ffb380; line-height: 1.5; }
+.reminder-text strong { color: var(--orange); }
+
+/* CHECKLIST */
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.check-item:hover { border-color: var(--border2); }
+.check-item.done { border-color: rgba(57,255,133,0.3); background: rgba(57,255,133,0.04); }
+.check-box {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+.check-item.done .check-box {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+.check-content {}
+.check-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.check-desc { font-size: 11px; color: var(--muted); }
+
+
+/* ============================================
+   NUTRICION STYLES (scoped)
+   ============================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+  :root {
+    --bg: #0d0f0e;
+    --surface: #131614;
+    --surface2: #1a1d1b;
+    --border: #242824;
+    --accent: #b8f04a;
+    --accent2: #f0a84a;
+    --accent3: #4af0c8;
+    --red: #f04a4a;
+    --text: #e8ede9;
+    --muted: #6b7a6d;
+    --muted2: #4a5a4c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 40px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
+
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .header-meta {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  /* Macro targets */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .macro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .macro-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .macro-card.cals::before { background: var(--accent2); }
+  .macro-card.prot::before { background: var(--accent); }
+  .macro-card.carbs::before { background: var(--accent3); }
+  .macro-card.fat::before { background: #a084f0; }
+
+  .macro-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .macro-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .macro-card.cals .macro-value { color: var(--accent2); }
+  .macro-card.prot .macro-value { color: var(--accent); }
+  .macro-card.carbs .macro-value { color: var(--accent3); }
+  .macro-card.fat .macro-value { color: #a084f0; }
+
+  .macro-unit {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .macro-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Gap alert */
+  .gap-alert {
+    background: #1a1008;
+    border: 1px solid #3d2808;
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .gap-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .gap-text strong {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  .gap-text p {
+    color: #c8a870;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* Day cards */
+  .days-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .day-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+  .badge-pesas { background: #1a2e0a; color: var(--accent); border: 1px solid #2a4a10; }
+  .badge-golf { background: #0a1e2a; color: var(--accent3); border: 1px solid #103040; }
+  .badge-padel { background: #2a1a0a; color: var(--accent2); border: 1px solid #4a2e10; }
+  .badge-descanso { background: #1a1a2a; color: #a0a0f0; border: 1px solid #2a2a4a; }
+
+  .meals-list {
+    padding: 16px 20px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .meal {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .meal-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+
+  .meal-name {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .meal-detail {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .meal-prot {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .meal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  .day-total {
+    padding: 12px 20px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  .total-item span { color: var(--muted); }
+  .total-item strong { color: var(--text); }
+  .total-item.ok strong { color: var(--accent); }
+  .total-item.warn strong { color: var(--accent2); }
+
+  /* Supplements */
+  .supp-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .supp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 140px 80px 1fr 160px;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .supp-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .priority-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .p-critico { background: #1a2e0a; color: var(--accent); border: 1px solid #2a4a10; }
+  .p-importante { background: #0a1e2a; color: var(--accent3); border: 1px solid #103040; }
+  .p-moderado { background: #2a2a1a; color: #f0e04a; border: 1px solid #4a4a20; }
+  .p-considerar { background: #1a1a2a; color: #a0a0f0; border: 1px solid #2a2a4a; }
+
+  .supp-detail {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .supp-detail strong {
+    color: var(--text);
+    font-size: 13px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .supp-timing {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* Protein quick ref */
+  .prot-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .prot-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .prot-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .prot-table tr:last-child td { border-bottom: none; }
+  .prot-table tr:hover td { background: var(--surface2); }
+  .prot-g {
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .prot-context { color: var(--muted); font-size: 11px; }
+
+  /* Timing chart */
+  .timing-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timing-row:last-child { border-bottom: none; }
+  .timing-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .timing-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .timing-content {
+    font-size: 13px;
+    color: var(--text);
+  }
+  .timing-prot {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .note-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .note-box strong { color: var(--text); }
+
+  @media (max-width: 700px) {
+    .macro-grid { grid-template-columns: repeat(2, 1fr); }
+    .meal { grid-template-columns: 80px 1fr auto; }
+    .supp-card { grid-template-columns: 1fr 80px; grid-template-rows: auto auto; }
+    .supp-timing { display: none; }
+  }
+
+
+/* Nutricion section padding */
+#section-nutricion .header { padding-top: 0; }
+
+/* Dashboard section padding */
+#section-dashboard .header { padding-top: 24px; }
+
+/* Diario page padding */
+#section-diario .page { padding-top: 72px; }
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-title">Wellness</div>
+  <div class="topbar-current" id="topbarCurrent">Diario</div>
+  <div class="topbar-date" id="topbarDate"></div>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- SIDE DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-brand">Wellness · Plan 12 semanas</div>
+    <div class="drawer-name">Carlos</div>
+  </div>
+  <nav class="drawer-nav">
+    <div class="drawer-section-label">Diario</div>
+    <div class="drawer-item active" id="nav-diario-hoy" onclick="navigateTo('diario', 'hoy')">
+      <div class="drawer-item-icon">📋</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Hoy</div>
+        <div class="drawer-item-desc">Proteína, suplementos, estrés</div>
+      </div>
+    </div>
+    <div class="drawer-item" id="nav-diario-suenos" onclick="navigateTo('diario', 'suenos')">
+      <div class="drawer-item-icon">🌙</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Sueño</div>
+        <div class="drawer-item-desc">Protocolo nocturno + registro</div>
+      </div>
+    </div>
+    <div class="drawer-item" id="nav-diario-semana" onclick="navigateTo('diario', 'semana')">
+      <div class="drawer-item-icon">📅</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Semana</div>
+        <div class="drawer-item-desc">Vista semanal + métricas</div>
+      </div>
+    </div>
+
+    <div class="drawer-section-label" style="margin-top:8px">Guías</div>
+    <div class="drawer-item" id="nav-diario-comida" onclick="navigateTo('diario', 'comida')">
+      <div class="drawer-item-icon">🍽️</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Restaurantes</div>
+        <div class="drawer-item-desc">Suntory, Nostos, Hunan, Itto, Toño</div>
+      </div>
+    </div>
+    <div class="drawer-item" id="nav-nutricion" onclick="navigateTo('nutricion')">
+      <div class="drawer-item-icon">🥗</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Plan Nutricional</div>
+        <div class="drawer-item-desc">Macros, menú semanal, suplementos</div>
+      </div>
+    </div>
+
+    <div class="drawer-section-label" style="margin-top:8px">Seguimiento</div>
+    <div class="drawer-item" id="nav-dashboard" onclick="navigateTo('dashboard')">
+      <div class="drawer-item-icon">📊</div>
+      <div class="drawer-item-text">
+        <div class="drawer-item-name">Dashboard Mensual</div>
+        <div class="drawer-item-desc">Métricas, fuerza, composición</div>
+      </div>
+    </div>
+  </nav>
+  <div class="drawer-footer">
+    Inicio del plan: 21 Mayo 2026
+  </div>
+</div>
+
+<!-- ============================================
+     SECTION: DIARIO
+     ============================================ -->
+<div id="section-diario" class="app-section active">
+
+
+<!-- PAGE: HOY -->
+<div class="page active" id="page-hoy">
+  <div class="sec-label">registro diario</div>
+  <div class="page-title">¿Cómo vas hoy?</div>
+
+  <!-- PROTEIN TRACKER -->
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--green)">◉</span> Proteína del día
+    </div>
+    <div class="prot-ring-wrapper">
+      <div class="prot-ring">
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/>
+          <circle id="protCircle" cx="45" cy="45" r="36" fill="none" stroke="#a8ff57"
+            stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="226" stroke-dashoffset="226"
+            style="transition: stroke-dashoffset 0.5s ease;"/>
+        </svg>
+        <div class="prot-ring-text">
+          <div class="prot-ring-val" id="protVal">0</div>
+          <div class="prot-ring-unit">/ 154g</div>
+        </div>
+      </div>
+      <div class="prot-info">
+        <div class="prot-goal">Meta diaria: <strong style="color:var(--text)">154g proteína</strong></div>
+        <div class="prot-remaining" id="protRemaining">Te faltan 154g</div>
+        <div style="margin-top:8px; font-size:11px; color:var(--muted)">Toca cada comida cuando la termines</div>
+      </div>
+    </div>
+
+    <div class="meal-grid">
+      <div class="meal-chip" onclick="toggleMeal(this, 25)" data-name="Desayuno (3 huevos + frijoles)">
+        <div class="meal-chip-name">☀️ Desayuno</div>
+        <div class="meal-chip-prot">+25g</div>
+        <div class="meal-chip-cal">3 huevos + frijoles + fruta</div>
+      </div>
+      <div class="meal-chip" onclick="toggleMeal(this, 25)" data-name="Whey Post-entreno">
+        <div class="meal-chip-name">🥤 Whey post-entreno</div>
+        <div class="meal-chip-prot">+25g</div>
+        <div class="meal-chip-cal">1 scoop + creatina 5g</div>
+      </div>
+      <div class="meal-chip" onclick="toggleMeal(this, 38)" data-name="Comida">
+        <div class="meal-chip-name">🍽️ Comida</div>
+        <div class="meal-chip-prot">+38g</div>
+        <div class="meal-chip-cal">150g+ proteína animal</div>
+      </div>
+      <div class="meal-chip" onclick="toggleMeal(this, 28)" data-name="Cena">
+        <div class="meal-chip-name">🌙 Cena</div>
+        <div class="meal-chip-prot">+28g</div>
+        <div class="meal-chip-cal">Huevo + cottage o atún</div>
+      </div>
+    </div>
+
+    <button class="whey-btn" id="wheyExtra" onclick="toggleWheyExtra()">
+      <span>+</span> ¿Tomaste whey post-pádel? (+25g)
+    </button>
+  </div>
+
+  <!-- SUPLEMENTOS -->
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--blue)">◉</span> Suplementos
+    </div>
+    <div class="supp-row">
+      <div class="supp-name-wrap">
+        <div class="supp-name-text">Creatina 5g</div>
+        <div class="supp-timing-text">Con el whey — todos los días</div>
+      </div>
+      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
+    </div>
+    <div class="supp-row">
+      <div class="supp-name-wrap">
+        <div class="supp-name-text">Vitamina D3 + K2</div>
+        <div class="supp-timing-text">Con desayuno (con grasa)</div>
+      </div>
+      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
+    </div>
+    <div class="supp-row">
+      <div class="supp-name-wrap">
+        <div class="supp-name-text">Omega-3 EPA/DHA</div>
+        <div class="supp-timing-text">Con comida principal</div>
+      </div>
+      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
+    </div>
+    <div class="supp-row">
+      <div class="supp-name-wrap">
+        <div class="supp-name-text">Magnesio Glicinato 400mg</div>
+        <div class="supp-timing-text">30-60 min antes de dormir</div>
+      </div>
+      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
+    </div>
+  </div>
+
+  <!-- ESTRÉS -->
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--orange)">◉</span> Nivel de estrés hoy
+    </div>
+    <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">El estrés eleva cortisol → suprime testosterona → frena ganancia muscular</div>
+    <div class="stress-scale">
+      <button class="stress-btn" onclick="selectStress(1, this)">1</button>
+      <button class="stress-btn" onclick="selectStress(2, this)">2</button>
+      <button class="stress-btn" onclick="selectStress(3, this)">3</button>
+      <button class="stress-btn" onclick="selectStress(4, this)">4</button>
+      <button class="stress-btn" onclick="selectStress(5, this)">5</button>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--muted); font-family:'Syne Mono',monospace; padding: 0 2px;">
+      <span>Tranquilo</span><span>Moderado</span><span>Alto</span>
+    </div>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--purple)">◉</span> Nota del día
+    </div>
+    <textarea class="notes-area" id="dailyNotes" placeholder="Cómo te sentiste en el entreno, qué comiste, algo que notar..."></textarea>
+  </div>
+
+  <button class="save-btn" onclick="saveDay()">Guardar registro del día</button>
+</div>
+
+<!-- PAGE: RESTAURANTES -->
+<div class="page" id="page-comida">
+  <div class="sec-label">guía de restaurantes</div>
+  <div class="page-title">Qué pedir <em style="font-style:italic;font-weight:400;color:var(--orange)">fuera</em></div>
+
+  <div style="font-size:12px; color:var(--muted); margin-bottom:20px; padding:12px; background:var(--s1); border:1px solid var(--border); border-radius:8px;">
+    📌 Regla de oro: proteína primero, luego carbohidratos, luego lo demás. Siempre pide agua natural.
+  </div>
+
+  <div class="rest-tabs">
+    <button class="rest-tab active" onclick="showRest('suntory', this)">🍣 Suntory</button>
+    <button class="rest-tab" onclick="showRest('nostos', this)">🫒 Nostos</button>
+    <button class="rest-tab" onclick="showRest('hunan', this)">🥢 Hunan</button>
+    <button class="rest-tab" onclick="showRest('itto', this)">🍱 Sushi Itto</button>
+    <button class="rest-tab" onclick="showRest('tono', this)">🌮 Casa de Toño</button>
+  </div>
+
+  <!-- SUNTORY -->
+  <div class="rest-panel active" id="rest-suntory">
+    <div class="menu-section">
+      <div class="menu-section-title">✅ Pedir siempre</div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Sashimi Mixto Especial (240g)</div><div class="menu-item-why">Máxima proteína, mínimas calorías. Salmón + atún + hamachi. El mejor plato del menú.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~42g</div><div class="menu-item-cal">280 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Edamame (150g)</div><div class="menu-item-why">Siempre pedir como entrada. Proteína + fibra + isoflavonas.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~14g</div><div class="menu-item-cal">145 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Ribeye Teppanyaki + verduras extras</div><div class="menu-item-why">Plato principal ideal. Pedir espinacas, espárragos o enoki como acompañamiento.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~55g</div><div class="menu-item-cal">650 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Misoshiru</div><div class="menu-item-why">Siempre pedir. Probióticos + glutamato natural + muy bajo en calorías.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~5g</div><div class="menu-item-cal">60 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Espárragos con Carne de Res (180g)</div><div class="menu-item-why">Excelente entrada. Alta proteína con verdura incluida.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~28g</div><div class="menu-item-cal">310 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Gohan (arroz blanco, 140g)</div><div class="menu-item-why">Carbohidrato limpio si necesitas energía. Mejor que el yakimeshi.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~3g</div><div class="menu-item-cal">210 kcal</div></div></div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">❌ Evitar</div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Tempura (cualquier tipo)</div><div class="menu-item-why">Rebozado en aceite, alta carga glucémica, muy calórico.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Yakimeshi (arroz frito)</div><div class="menu-item-why">Alto en aceite y sodio. Pedir Gohan en su lugar.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Kushiague empanizados</div><div class="menu-item-why">Mismo problema que el tempura. Muy procesado.</div></div></div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-label">🎯 Combo ideal</div>
+      <div class="combo-text">Misoshiru + Edamame + Sashimi Mixto Especial + Ribeye Teppanyaki + Gohan</div>
+      <div class="combo-stats">Proteína: ~116g &nbsp;|&nbsp; ~1,345 kcal</div>
+    </div>
+  </div>
+
+  <!-- NOSTOS -->
+  <div class="rest-panel" id="rest-nostos">
+    <div class="menu-section">
+      <div class="menu-section-title">✅ Pedir siempre</div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Kotopoulo Spazi (½ pollo orgánico a las brasas)</div><div class="menu-item-why">El plato más proteico del menú. Pollo orgánico entero. Imperdible.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~65g</div><div class="menu-item-cal">520 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Kokkino (salmón curado, betabel)</div><div class="menu-item-why">Entrada perfecta. Alta proteína + omega-3 del salmón + antioxidantes del betabel.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~22g</div><div class="menu-item-cal">220 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Pulpo asado con aceite de oliva</div><div class="menu-item-why">Proteína alta + grasas monoinsaturadas antiinflamatorias. Excelente para grasa visceral.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~25g</div><div class="menu-item-cal">280 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Avgolemono (sopa pollo + orzo + limón)</div><div class="menu-item-why">Entrada nutritiva y reconfortante. Proteína + colágeno del caldo.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~18g</div><div class="menu-item-cal">210 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Vegetales a las brasas con Tzatziki</div><div class="menu-item-why">Acompañamiento ideal. El tzatziki es yogurt griego = probiótico + proteína adicional.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~8g</div><div class="menu-item-cal">145 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Salmón canadiense (a las brasas o Salt Crust)</div><div class="menu-item-why">Preparación limpia. Alto en omega-3. Si está disponible, elegir sobre las carnes rojas.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~45g</div><div class="menu-item-cal">380 kcal</div></div></div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">❌ Evitar</div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Costillas de Cordero Lollipop</div><div class="menu-item-why">Muy alta en grasa saturada para tu objetivo actual.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Baklava / Loukoumades / Galaktoboureko</div><div class="menu-item-why">Miel + mantequilla + azúcar. Impacto glucémico elevado.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Linguini con Langosta</div><div class="menu-item-why">Alta carga de carbohidratos refinados. Si quieres langosta, pide preparación diferente.</div></div></div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-label">🎯 Combo ideal</div>
+      <div class="combo-text">Avgolemono + Kotopoulo Spazi + Vegetales a las brasas</div>
+      <div class="combo-stats">Proteína: ~91g &nbsp;|&nbsp; ~875 kcal</div>
+    </div>
+  </div>
+
+  <!-- HUNAN -->
+  <div class="rest-panel" id="rest-hunan">
+    <div class="menu-section">
+      <div class="menu-section-title">✅ Pedir siempre</div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Steam Fish (robalo al vapor)</div><div class="menu-item-why">La opción más limpia del menú. Sin aceite extra. Preparación ideal para tu objetivo.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~38g</div><div class="menu-item-cal">280 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Grill Sea Bass con balsámico</div><div class="menu-item-why">Alta proteína, bajo en grasa. El vinagre balsámico mejora sensibilidad insulínica.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~38g</div><div class="menu-item-cal">320 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Steamed Dumplings (6 pzas)</div><div class="menu-item-why">Al vapor, no fritos. Entrada proteica sin exceso de aceite.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~14g</div><div class="menu-item-cal">180 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Kung Pao Chicken</div><div class="menu-item-why">Pollo + cacahuates = proteína + grasa saludable. Pedir con poco aceite si es posible.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~40g</div><div class="menu-item-cal">420 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Brócoli con salsa de ostión</div><div class="menu-item-why">Acompañamiento ideal. Crucífera antiinflamatoria + reducción cortisol.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~5g</div><div class="menu-item-cal">120 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Sliced Beef with Broccoli</div><div class="menu-item-why">Proteína completa + crucífera. Si quieres res, esta es la opción más balanceada.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~35g</div><div class="menu-item-cal">350 kcal</div></div></div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">❌ Evitar</div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Peking Duck (piel frita)</div><div class="menu-item-why">Alta grasa saturada + piel frita. Reservar para ocasiones muy especiales.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Sweet and Sour Pork</div><div class="menu-item-why">Carne rebozada + salsa de azúcar. Impacto glucémico alto.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Combination Fried Rice</div><div class="menu-item-why">Arroz frito muy calórico. Si quieres arroz, pedir arroz blanco al vapor aparte.</div></div></div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-label">🎯 Combo ideal</div>
+      <div class="combo-text">Steamed Dumplings + Steam Fish + Brócoli con ostión + arroz blanco (chico)</div>
+      <div class="combo-stats">Proteína: ~72g &nbsp;|&nbsp; ~740 kcal</div>
+    </div>
+  </div>
+
+  <!-- SUSHI ITTO -->
+  <div class="rest-panel" id="rest-itto">
+    <div class="menu-section">
+      <div class="menu-section-title">✅ Pedir siempre</div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Salmón Flameado (190g)</div><div class="menu-item-why">El plato más proteico del menú. Marinado y flameado — sin rebozar. Siempre primera opción.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~42g</div><div class="menu-item-cal">480 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Edamame</div><div class="menu-item-why">Pedir siempre como entrada. 11g proteína, fibra, isoflavonas.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~11g</div><div class="menu-item-cal">120 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Pollo Torino (200g)</div><div class="menu-item-why">Pechuga marinada + ensalada incluida. Alta proteína con baja carga calórica.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~38g</div><div class="menu-item-cal">320 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Sashimi Salmón fresco (125g)</div><div class="menu-item-why">Proteína pura. La opción más limpia si quieres algo ligero.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~28g</div><div class="menu-item-cal">215 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Spicy Tuna Donburi</div><div class="menu-item-why">Atún + arroz + alga + aguacate. Comida completa en una orden.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~30g</div><div class="menu-item-cal">420 kcal</div></div></div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">❌ Evitar</div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Rollos empanizados (La Pinta, Harami, etc.)</div><div class="menu-item-why">Rebozados en aceite, muy calóricos. El rebozado no aporta proteína útil.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Rollos con plátano (Panamá, etc.)</div><div class="menu-item-why">Azúcar del plátano frito + salsas dulces. Innecesario.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Kushiages fritos</div><div class="menu-item-why">Todos son empanizados. Si quieres brocheta, pedir Yakitori de pollo.</div></div></div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-label">🎯 Combo ideal</div>
+      <div class="combo-text">Edamame + Salmón Flameado + Sashimi Salmón</div>
+      <div class="combo-stats">Proteína: ~81g &nbsp;|&nbsp; ~815 kcal</div>
+    </div>
+  </div>
+
+  <!-- CASA DE TOÑO -->
+  <div class="rest-panel" id="rest-tono">
+    <div class="menu-section">
+      <div class="menu-section-title">✅ Pedir siempre</div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Caldo Tlalpeño</div><div class="menu-item-why">Pollo + chipotle + garbanzo + epazote. El plato más completo y nutritivo del menú.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~28g</div><div class="menu-item-cal">320 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Tacos de Bistec (3)</div><div class="menu-item-why">La opción más proteica si quieres tacos. Pedir sin crema.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~30g</div><div class="menu-item-cal">380 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Tostadas de Tinga (2)</div><div class="menu-item-why">Pollo desebrado + tostada. Pedir sin crema o poca crema.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~22g</div><div class="menu-item-cal">340 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Pozole de Pollo (chico)</div><div class="menu-item-why">Maíz + caldo + pollo. Más completo que una quesadilla. Pedir agua con la sopa.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~25g</div><div class="menu-item-cal">310 kcal</div></div></div>
+      <div class="menu-item top-pick"><div class="menu-item-dot"></div><div><div class="menu-item-name">Enchiladas de pollo</div><div class="menu-item-why">OK si reduces la crema. El relleno de pollo tiene buena proteína.</div></div><div class="menu-item-stats"><div class="menu-item-prot">~28g</div><div class="menu-item-cal">420 kcal</div></div></div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">❌ Evitar</div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Pozole de Maciza o Cabeza</div><div class="menu-item-why">Muy alta en grasa saturada. El pozole de pollo tiene el mismo sabor con mejor perfil.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Flautas fritas</div><div class="menu-item-why">Rebozadas en aceite. Si quieres algo parecido, las tostadas son mejor opción.</div></div></div>
+      <div class="menu-item avoid-item"><div class="menu-item-dot"></div><div><div class="menu-item-name">Refrescos</div><div class="menu-item-why">Azúcar líquida directa. Pedir agua de jamaica sin azúcar o agua natural.</div></div></div>
+    </div>
+    <div class="combo-box">
+      <div class="combo-label">🎯 Combo ideal</div>
+      <div class="combo-text">Caldo Tlalpeño + Tostadas de Tinga + agua de jamaica sin azúcar</div>
+      <div class="combo-stats">Proteína: ~50g &nbsp;|&nbsp; ~660 kcal</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SUEÑO -->
+<div class="page" id="page-suenos">
+  <div class="sec-label">protocolo con evidencia clínica</div>
+  <div class="page-title">Rutina de <em style="font-style:italic;color:var(--purple)">sueño</em></div>
+
+  <div style="background:rgba(179,157,219,0.06); border:1px solid rgba(179,157,219,0.2); border-radius:10px; padding:14px 16px; margin-bottom:20px; font-size:12px; line-height:1.6; color:#c5b8e8;">
+    <strong style="color:var(--purple)">Tu déficit:</strong> SWS (sueño profundo) promedio de <strong>73 min</strong> vs objetivo de 90+ min. El 70% de la hormona de crecimiento se libera durante SWS. Cada minuto que recuperas aquí vale más que cualquier suplemento.
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--purple)">◉</span> Protocolo nocturno — marca cuando lo completes
+    </div>
+    <div class="sleep-steps">
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">1</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Magnesio Glicinato 400mg</div>
+          <div class="sleep-step-desc">Tomar con un vaso de agua. Activa receptores GABA, reduce excitabilidad neuronal y baja cortisol nocturno. Efecto visible en WHOOP en 2-3 semanas.</div>
+          <div class="sleep-step-time">90 min antes de dormir</div>
+          <div class="evidence-badge">Meta-análisis: +19 min SWS promedio · PMID 31856098</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">2</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Última pantalla / teléfono</div>
+          <div class="sleep-step-desc">Activar Night Shift o Modo oscuro no es suficiente. La luz azul de pantallas suprime melatonina hasta 3 horas. El scroll activa dopamina que retrasa el inicio del sueño.</div>
+          <div class="sleep-step-time">60 min antes de dormir</div>
+          <div class="evidence-badge">Chang et al. 2015 · PNAS · lectura en pantalla retrasa sueño 1.5 hrs</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">3</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Temperatura del cuarto: 18-20°C</div>
+          <div class="sleep-step-desc">La caída de temperatura corporal es la señal fisiológica que activa el sueño profundo. Un cuarto caliente (>22°C) reduce SWS hasta 25%. Si no tienes AC, ventilador con aire frío o ventana entreabierta.</div>
+          <div class="sleep-step-time">Al entrar al cuarto</div>
+          <div class="evidence-badge">Okamoto-Mizuno · Journal of Physiological Anthropology</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">4</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Cuarto completamente oscuro</div>
+          <div class="sleep-step-desc">Incluso luz tenue (lampara del pasillo, LEDs de dispositivos) reduce melatonina y fragmenta el sueño profundo. Blackout curtains o antifaz. Tapar luces de aparatos electrónicos.</div>
+          <div class="sleep-step-time">Al acostarte</div>
+          <div class="evidence-badge">Mason et al. 2022 · PNAS · luz ambiental durante sueño eleva cortisol AM</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">5</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Proteína caseína antes de dormir</div>
+          <div class="sleep-step-desc">150-200g queso cottage o yogurt griego. La caseína se digiere lentamente (6-8 hrs) y alimenta la síntesis muscular durante el sueño. Efecto demostrado en síntesis proteica nocturna.</div>
+          <div class="sleep-step-time">30 min antes de dormir</div>
+          <div class="evidence-badge">Res et al. · Medicine & Science in Sports · +22% síntesis proteica nocturna</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">6</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Hora de dormir consistente (±30 min)</div>
+          <div class="sleep-step-desc">El reloj circadiano regula cuándo libera hormona de crecimiento y cuándo profundiza el sueño. Variar más de 30 min desincroniza el ciclo aunque duermas las mismas horas totales.</div>
+          <div class="sleep-step-time">Mismo horario todos los días</div>
+          <div class="evidence-badge">Phillips et al. · Science Advances · irregularidad circadiana reduce SWS 14%</div>
+        </div>
+      </div>
+
+      <div class="sleep-step" onclick="toggleSleep(this)">
+        <div class="sleep-step-num">7</div>
+        <div class="sleep-step-content">
+          <div class="sleep-step-title">Sin alcohol (o limitar a 1 copa antes de las 8pm)</div>
+          <div class="sleep-step-desc">El alcohol fragmenta el sueño REM y suprime el SWS en la segunda mitad de la noche. Una copa a las 11pm puede reducir sueño profundo hasta 40% esa noche. Visible en tu WHOOP.</div>
+          <div class="sleep-step-time">Regla: si tomas, hacerlo antes de las 8pm</div>
+          <div class="evidence-badge">Ebrahim et al. · Alcoholism: Clinical & Experimental Research</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--blue)">◉</span> Registro de sueño (hoy)
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-header">
+        <span class="prog-bar-label">Sueño profundo (SWS)</span>
+        <span class="prog-bar-val"><input type="number" id="swsInput" min="0" max="180" value="73" style="width:40px;background:none;border:none;color:var(--text);font-family:'Syne Mono',monospace;font-size:13px;text-align:right;" oninput="updateSleep()"> min</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="swsBar" style="width:81%;background:var(--purple);"></div></div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-header">
+        <span class="prog-bar-label">Horas totales</span>
+        <span class="prog-bar-val"><input type="number" id="sleepHrsInput" min="0" max="12" value="6.8" step="0.1" style="width:40px;background:none;border:none;color:var(--text);font-family:'Syne Mono',monospace;font-size:13px;text-align:right;" oninput="updateSleepHrs()"> hrs</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="sleepHrsBar" style="width:85%;background:var(--blue);"></div></div>
+    </div>
+    <div style="margin-top:12px; font-size:11px; color:var(--muted);">Metas: SWS > 90 min &nbsp;·&nbsp; Total > 7.5 hrs</div>
+  </div>
+</div>
+
+<!-- PAGE: SEMANA -->
+<div class="page" id="page-semana">
+  <div class="sec-label">vista semanal</div>
+  <div class="page-title">Esta semana</div>
+
+  <div class="week-grid" id="weekGrid"></div>
+
+  <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px; font-size:11px; color:var(--muted); font-family:'Syne Mono',monospace;">
+    <span><span class="w-dot pesas" style="display:inline-block;margin-right:5px;"></span>Pesas</span>
+    <span><span class="w-dot golf" style="display:inline-block;margin-right:5px;"></span>Golf</span>
+    <span><span class="w-dot padel" style="display:inline-block;margin-right:5px;"></span>Pádel</span>
+    <span><span class="w-dot rest" style="display:inline-block;margin-right:5px;"></span>Descanso</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span style="color:var(--green)">◉</span> Métricas de la semana
+    </div>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--green)" id="daysTrainedVal">0</div>
+        <div class="metric-label">días entreno</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--orange)" id="avgProtVal">—</div>
+        <div class="metric-label">prot. promedio</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" style="color:var(--purple)" id="avgSWSVal">—</div>
+        <div class="metric-label">SWS prom.</div>
+      </div>
+    </div>
+
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-header">
+        <span class="prog-bar-label">Días protocolo sueño completado</span>
+        <span class="prog-bar-val" id="sleepProtocolVal">0 / 7</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="sleepProtocolBar" style="width:0%;background:var(--purple);"></div></div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-header">
+        <span class="prog-bar-label">Días proteína >100g</span>
+        <span class="prog-bar-val" id="protDaysVal">0 / 7</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="protDaysBar" style="width:0%;background:var(--green);"></div></div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-header">
+        <span class="prog-bar-label">Días creatina tomada</span>
+        <span class="prog-bar-val" id="creatineDaysVal">0 / 7</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="creatineDaysBar" style="width:0%;background:var(--blue);"></div></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+
+<!-- ============================================
+     SECTION: NUTRICION
+     ============================================ -->
+<div id="section-nutricion" class="app-section">
+  <div style="padding: 72px 24px 40px; max-width: 900px; margin: 0 auto;">
+
+
+<div class="header">
+  <div class="header-label">Plan Nutricional · Fase 1 — Recomposición</div>
+  <h1>Alimentación<br><em>& Suplementos</em></h1>
+  <div class="header-meta">Carlos · 85.6 kg · 189 cm · 37 años · Mayo 2026</div>
+</div>
+
+<!-- MACROS TARGET -->
+<div class="section">
+  <div class="section-title">Objetivos diarios</div>
+
+  <div class="macro-grid">
+    <div class="macro-card cals">
+      <div class="macro-label">Calorías</div>
+      <div class="macro-value">2,750</div>
+      <div class="macro-unit">kcal/día</div>
+      <div class="macro-sub">mantenimiento</div>
+    </div>
+    <div class="macro-card prot">
+      <div class="macro-label">Proteína</div>
+      <div class="macro-value">154</div>
+      <div class="macro-unit">g/día</div>
+      <div class="macro-sub">1.8g / kg peso</div>
+    </div>
+    <div class="macro-card carbs">
+      <div class="macro-label">Carbohidratos</div>
+      <div class="macro-value">365</div>
+      <div class="macro-unit">g/día</div>
+      <div class="macro-sub">energía + entreno</div>
+    </div>
+    <div class="macro-card fat">
+      <div class="macro-label">Grasas</div>
+      <div class="macro-value">75</div>
+      <div class="macro-unit">g/día</div>
+      <div class="macro-sub">testosterona</div>
+    </div>
+  </div>
+
+  <div class="gap-alert">
+    <div class="gap-icon">⚠️</div>
+    <div class="gap-text">
+      <strong>Gap actual: solo ~75g de proteína / ~1,500 kcal al día</strong>
+      <p>Estás comiendo casi la mitad de lo que necesitas en calorías y proteína. El cuerpo en déficit calórico crónico prioriza conservar grasa y catabolizar músculo — exactamente lo opuesto a tu objetivo. El ajuste más importante no es qué comes, sino <strong>cuánto</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN POR DÍA -->
+<div class="section">
+  <div class="section-title">Plan semanal por día</div>
+
+  <div class="days-grid">
+
+    <!-- LUNES -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">LUNES — Día de pesas (Push)</div>
+        <div class="day-badge badge-pesas">PESAS AM</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">7:00 AM</div>
+          <div>
+            <div class="meal-name">Post-entreno inmediato</div>
+            <div class="meal-detail">1 scoop whey + agua o leche descremada</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:30 AM</div>
+          <div>
+            <div class="meal-name">Desayuno en casa</div>
+            <div class="meal-detail">3 huevos + nopales/champiñones + ½ taza frijoles + fruta</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">2:00 PM</div>
+          <div>
+            <div class="meal-name">Comida en casa de papás</div>
+            <div class="meal-detail">150g carne/pollo/pescado + ensalada + arroz o tortillas (2 max)</div>
+          </div>
+          <div class="meal-prot">+38g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:00 PM</div>
+          <div>
+            <div class="meal-name">Cena — cambio clave</div>
+            <div class="meal-detail">2 huevos revueltos + 150g queso cottage + 1 tortilla. Deja las quesadillas para días sin pesas.</div>
+          </div>
+          <div class="meal-prot">+30g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item ok"><span>Proteína </span><strong>~118g</strong></div>
+        <div class="total-item warn"><span>Calorías </span><strong>~2,400 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>+ Whey post creatina</strong></div>
+      </div>
+    </div>
+
+    <!-- MARTES -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">MARTES — Golf 9 hoyos</div>
+        <div class="day-badge badge-golf">GOLF AM</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">6:45 AM</div>
+          <div>
+            <div class="meal-name">⚡ Pre-golf (antes de salir)</div>
+            <div class="meal-detail">1 plátano + 1 scoop whey con agua. Corta el ayuno nocturno, protege el músculo durante el ejercicio. Si el whey te cae pesado jugando, solo el plátano.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">~10:00 AM</div>
+          <div>
+            <div class="meal-name">Desayuno post-golf en casa</div>
+            <div class="meal-detail">3 huevos + nopales/champiñones + frijoles + fruta. Este es tu desayuno completo — el timing post-ejercicio es bueno para síntesis muscular.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">2:00 PM</div>
+          <div>
+            <div class="meal-name">Comida — Casa de Toño</div>
+            <div class="meal-detail">Caldo tlalpeño o sopa de lima + tostadas de tinga de pollo. Evitar enchiladas en salsa roja (alta en grasa saturada). Pedir agua natural, no refresco.</div>
+          </div>
+          <div class="meal-prot">+32g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:30 PM</div>
+          <div>
+            <div class="meal-name">Cena ligera</div>
+            <div class="meal-detail">Quesadilla (2 tortillas + queso panela) está bien hoy — día de menor desgaste muscular.</div>
+          </div>
+          <div class="meal-prot">+18g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item warn"><span>Proteína </span><strong>~100g</strong></div>
+        <div class="total-item"><span>Calorías </span><strong>~2,300 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>Pre-golf protege músculo</strong></div>
+      </div>
+    </div>
+
+    <!-- MIÉRCOLES -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">MIÉRCOLES — Día de pesas (Pull)</div>
+        <div class="day-badge badge-pesas">PESAS AM</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">7:00 AM</div>
+          <div>
+            <div class="meal-name">Post-entreno inmediato</div>
+            <div class="meal-detail">1 scoop whey + agua</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:30 AM</div>
+          <div>
+            <div class="meal-name">Desayuno en casa</div>
+            <div class="meal-detail">3 huevos + verdura + frijoles + fruta</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">2:00 PM</div>
+          <div>
+            <div class="meal-name">Comida — Sushito</div>
+            <div class="meal-detail">Edamame (entrada obligatoria: +11g proteína) + 2 rollos con salmón/atún + miso. Evitar rollos tempura o con crema.</div>
+          </div>
+          <div class="meal-prot">+38g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:00 PM</div>
+          <div>
+            <div class="meal-name">Cena proteica</div>
+            <div class="meal-detail">Atún en lata (120g) + aguacate + tostadas integrales (2). Simple, rápido, ~28g proteína.</div>
+          </div>
+          <div class="meal-prot">+28g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item ok"><span>Proteína </span><strong>~116g</strong></div>
+        <div class="total-item warn"><span>Calorías </span><strong>~2,350 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>Día clave — priorizar proteína</strong></div>
+      </div>
+    </div>
+
+    <!-- JUEVES -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">JUEVES — Pádel tarde/noche</div>
+        <div class="day-badge badge-padel">PÁDEL PM</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">8:00 AM</div>
+          <div>
+            <div class="meal-name">Desayuno en casa</div>
+            <div class="meal-detail">3 huevos + frijoles + fruta. Añadir yogurt griego 150g si es posible.</div>
+          </div>
+          <div class="meal-prot">+35g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">2:00 PM</div>
+          <div>
+            <div class="meal-name">Comida — Restaurante (Hunan / Nostos / Suntory)</div>
+            <div class="meal-detail"><strong>Hunan:</strong> Pato Pekín o res con brócoli, pedir arroz blanco aparte. <strong>Nostos:</strong> Pulpo o carne de res, ensalada griega. <strong>Suntory:</strong> Sashimi variado + sopa de miso + gyozas al vapor.</div>
+          </div>
+          <div class="meal-prot">+40g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">1hr antes pádel</div>
+          <div>
+            <div class="meal-name">Pre-pádel (snack ligero)</div>
+            <div class="meal-detail">Plátano + 1 puño de nueces. No comer pesado — afecta rendimiento en cancha.</div>
+          </div>
+          <div class="meal-prot">+3g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">Post-pádel</div>
+          <div>
+            <div class="meal-name">Post-pádel — crítico</div>
+            <div class="meal-detail">1 scoop whey inmediatamente al terminar. La ventana anabólica después del pádel (alta intensidad) es tan importante como la del gym.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item ok"><span>Proteína </span><strong>~103g</strong></div>
+        <div class="total-item ok"><span>Calorías </span><strong>~2,700 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>Tu día más exigente</strong></div>
+      </div>
+    </div>
+
+    <!-- VIERNES -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">VIERNES — Golf 18 hoyos</div>
+        <div class="day-badge badge-golf">GOLF AM (4hrs)</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">6:45 AM</div>
+          <div>
+            <div class="meal-name">⚡ Pre-golf (antes de salir)</div>
+            <div class="meal-detail">1 plátano + 1 scoop whey con agua. Igual que el martes — corta el ayuno, protege músculo. Para 18 hoyos esto es más crítico aún.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">Hoyo 9 (~10:00 AM)</div>
+          <div>
+            <div class="meal-name">Snack obligatorio — hoyo 9</div>
+            <div class="meal-detail">Plátano + barra de proteína (>15g) o puño de nueces. 4 horas es demasiado tiempo sin nada — sin esto el cortisol sube y catabolizas músculo.</div>
+          </div>
+          <div class="meal-prot">+15g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">~12:00 PM</div>
+          <div>
+            <div class="meal-name">Desayuno post-golf en casa</div>
+            <div class="meal-detail">3 huevos + frijoles + fruta + aguacate. Timing post-ejercicio ideal para síntesis muscular.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">3:00 PM</div>
+          <div>
+            <div class="meal-name">Comida libre</div>
+            <div class="meal-detail">Viernes libre. Proteína como base, luego lo que quieras. Si comes tarde, puede ser tu comida principal del día.</div>
+          </div>
+          <div class="meal-prot">+30g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:30 PM</div>
+          <div>
+            <div class="meal-name">Cena</div>
+            <div class="meal-detail">Flexible. Si cenas ligero, añade queso cottage (150g).</div>
+          </div>
+          <div class="meal-prot">+20g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item ok"><span>Proteína </span><strong>~115g</strong></div>
+        <div class="total-item ok"><span>Calorías </span><strong>~2,600 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>Hidratación prioritaria — 500ml/hr</strong></div>
+      </div>
+    </div>
+
+    <!-- SÁBADO -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-name">SÁBADO — Día de pesas (Legs)</div>
+        <div class="day-badge badge-pesas">PESAS AM</div>
+      </div>
+      <div class="meals-list">
+        <div class="meal">
+          <div class="meal-time">7:00 AM</div>
+          <div>
+            <div class="meal-name">Post-entreno inmediato</div>
+            <div class="meal-detail">1 scoop whey. El día de piernas es el de mayor estrés muscular — la ventana es crítica.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">9:00 AM</div>
+          <div>
+            <div class="meal-name">Desayuno grande</div>
+            <div class="meal-detail">4 huevos (hoy sí 4) + frijoles + aguacate + fruta + 2 tortillas. Día de mayor demanda calórica.</div>
+          </div>
+          <div class="meal-prot">+30g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">2:30 PM</div>
+          <div>
+            <div class="meal-name">Comida principal del día</div>
+            <div class="meal-detail">200g proteína animal (carne, pollo o pescado) + arroz o pasta + verduras. Hoy puedes comer más — el músculo lo necesita.</div>
+          </div>
+          <div class="meal-prot">+50g</div>
+        </div>
+        <div class="meal">
+          <div class="meal-time">8:30 PM</div>
+          <div>
+            <div class="meal-name">Cena proteica pre-sueño</div>
+            <div class="meal-detail">200g queso cottage + nueces. La caseína del cottage se digiere lento — alimenta el músculo durante las 7-8 horas de sueño.</div>
+          </div>
+          <div class="meal-prot">+25g</div>
+        </div>
+      </div>
+      <div class="day-total">
+        <div class="total-item ok"><span>Proteína </span><strong>~130g</strong></div>
+        <div class="total-item ok"><span>Calorías </span><strong>~2,900 kcal</strong></div>
+        <div class="total-item"><span>Nota </span><strong>Tu día más anabólico</strong></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUPLEMENTACIÓN -->
+<div class="section">
+  <div class="section-title">Suplementación</div>
+
+  <div class="supp-grid">
+    <div class="supp-card">
+      <div>
+        <div class="supp-name">Whey Protein</div>
+        <div class="macro-sub" style="margin-top:4px">Optimum Nutrition Gold Standard · 1 scoop = 24g proteína</div>
+      </div>
+      <div><span class="priority-badge p-critico">CRÍTICO</span></div>
+      <div class="supp-detail">
+        <strong>5g de creatina se pueden mezclar en el mismo scoop</strong>
+        El suplemento con mayor evidencia para ganancia muscular. No confundas con proteína de soya — whey (suero de leche) tiene el perfil de aminoácidos más completo y mayor velocidad de absorción.
+      </div>
+      <div class="supp-timing">Post-entreno<br>inmediato<br><br>Los 3 días de pesas<br>+ día de pádel</div>
+    </div>
+
+    <div class="supp-card">
+      <div>
+        <div class="supp-name">Creatina Monohidrato</div>
+        <div class="macro-sub" style="margin-top:4px">Cualquier marca · polvo sin sabor · 5g/día</div>
+      </div>
+      <div><span class="priority-badge p-critico">CRÍTICO</span></div>
+      <div class="supp-detail">
+        <strong>El suplemento más estudiado en la historia del deporte</strong>
+        +500 estudios clínicos. Aumenta fuerza 5-15%, masa muscular 1-2kg en 4-8 semanas, y mejora recuperación entre series. No requiere fase de carga. Tómala todos los días — incluso los de descanso.
+      </div>
+      <div class="supp-timing">Cualquier hora<br>todos los días<br><br>Mezclar con<br>el whey post-entreno</div>
+    </div>
+
+    <div class="supp-card">
+      <div>
+        <div class="meal-name">Magnesio Glicinato</div>
+        <div class="macro-sub" style="margin-top:4px">300-400mg · NO óxido de magnesio (baja absorción)</div>
+      </div>
+      <div><span class="priority-badge p-importante">IMPORTANTE</span></div>
+      <div class="supp-detail">
+        <strong>Específicamente para mejorar tu sueño profundo (SWS)</strong>
+        Tu SWS promedia 73 min vs objetivo de 90+. El magnesio activa el sistema GABA y reduce el cortisol nocturno. En 4-6 semanas notarás mayor profundidad de sueño — visible en tu WHOOP. El glicinato es la forma con mejor absorción y sin efecto laxante.
+      </div>
+      <div class="supp-timing">30-60 min<br>antes de dormir<br><br>Todos los días</div>
+    </div>
+
+    <div class="supp-card">
+      <div>
+        <div class="meal-name">Vitamina D3 + K2</div>
+        <div class="macro-sub" style="margin-top:4px">4,000-5,000 UI D3 + 100mcg K2 MK-7</div>
+      </div>
+      <div><span class="priority-badge p-importante">IMPORTANTE</span></div>
+      <div class="supp-detail">
+        <strong>Probable deficiencia — confirmar con labs</strong>
+        La D3 actúa como hormona: regula testosterona, función inmune, y síntesis proteica muscular. La K2 redirige el calcio a los huesos (no a las arterias). Tomar juntas con una comida que contenga grasa para máxima absorción.
+      </div>
+      <div class="supp-timing">Con desayuno<br>(con grasa)<br><br>Confirmar dosis<br>con labs de D3</div>
+    </div>
+
+    <div class="supp-card">
+      <div>
+        <div class="meal-name">Omega-3 EPA/DHA</div>
+        <div class="macro-sub" style="margin-top:4px">2-3g EPA+DHA/día · aceite de pescado o algas</div>
+      </div>
+      <div><span class="priority-badge p-moderado">MODERADO</span></div>
+      <div class="supp-detail">
+        <strong>Intervención directa en grasa visceral e inflamación</strong>
+        Reduce triglicéridos, mejora sensibilidad insulínica, y tiene efecto anti-inflamatorio que potencia la recuperación muscular. Especialmente relevante dado tu nivel 8 de grasa visceral. Busca que diga EPA+DHA en el empaque, no solo "aceite de pescado".
+      </div>
+      <div class="supp-timing">Con comida<br>principal<br><br>Todos los días</div>
+    </div>
+
+    <div class="supp-card">
+      <div>
+        <div class="meal-name">Zinc</div>
+        <div class="macro-sub" style="margin-top:4px">25-30mg · no tomar con calcio o hierro</div>
+      </div>
+      <div><span class="priority-badge p-considerar">ESPERAR LABS</span></div>
+      <div class="supp-detail">
+        <strong>Agregar solo si testosterona o zinc sérico salen bajos en labs</strong>
+        El zinc es cofactor de la testosterona. Si los labs muestran niveles normales, no hay beneficio en suplementar. Espera los resultados antes de añadirlo — no todo el mundo lo necesita.
+      </div>
+      <div class="supp-timing">Con cena<br>antes de dormir<br><br>Solo si labs<br>lo indican</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>Orden de compra recomendado:</strong> Primero creatina y whey (impacto inmediato). Segunda semana magnesio glicinato (mejora sueño en 2-4 semanas). Tercera semana D3+K2 y omega-3. El zinc después de los labs.
+    <br><br>
+    <strong>Dónde conseguir en México:</strong> GNC, Walmart (Optimum Nutrition está disponible), Amazon México. La creatina monohidrato más económica es de marca propia — la molécula es idéntica en todas.
+  </div>
+</div>
+
+<!-- PROTEIN QUICK REF -->
+<div class="section">
+  <div class="section-title">Referencia rápida de proteína</div>
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+    <table class="prot-table">
+      <thead>
+        <tr>
+          <th>Alimento</th>
+          <th>Proteína</th>
+          <th>Contexto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Pechuga de pollo 150g</td><td class="prot-g">45g</td><td class="prot-context">Comida en casa / restaurante</td></tr>
+        <tr><td>Carne asada 150g</td><td class="prot-g">38g</td><td class="prot-context">Tacos, comida en casa</td></tr>
+        <tr><td>Salmón 150g</td><td class="prot-g">34g</td><td class="prot-context">Sushi / Nostos / Suntory</td></tr>
+        <tr><td>Atún en lata 120g</td><td class="prot-g">28g</td><td class="prot-context">Cena fácil en casa</td></tr>
+        <tr><td>Whey protein 1 scoop</td><td class="prot-g">24g</td><td class="prot-context">Post-entreno y post-pádel</td></tr>
+        <tr><td>Yogurt griego 200g</td><td class="prot-g">20g</td><td class="prot-context">Desayuno / snack</td></tr>
+        <tr><td>Queso cottage 150g</td><td class="prot-g">18g</td><td class="prot-context">Cena — proteína lenta (caseína)</td></tr>
+        <tr><td>Edamame 100g</td><td class="prot-g">11g</td><td class="prot-context">Entrada en sushi — pedir siempre</td></tr>
+        <tr><td>Huevo entero (1)</td><td class="prot-g">6g</td><td class="prot-context">Desayuno base</td></tr>
+        <tr><td>Frijoles negros ½ taza</td><td class="prot-g">8g</td><td class="prot-context">Complemento desayuno</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="padding: 24px 0; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between;">
+  <span>Plan generado · Mayo 2026</span>
+  <span>Revisión en 4 semanas o post-labs</span>
+</div>
+
+
+  </div>
+</div>
+
+<!-- ============================================
+     SECTION: DASHBOARD
+     ============================================ -->
+<div id="section-dashboard" class="app-section">
+  <div class="header" style="padding-top:24px;">
+    <div class="header-left">
+      <div class="brand">Wellness Dashboard · Carlos</div>
+      <div class="title">Progreso <span>12 semanas</span></div>
+      <div class="subtitle">Fase 1 — Recomposición · Mayo 2026 – Agosto 2026</div>
+    </div>
+    <div class="month-nav">
+      <button class="month-btn" onclick="prevMonth()">‹</button>
+      <div class="month-label" id="monthLabel">—</div>
+      <button class="month-btn" onclick="nextMonth()">›</button>
+    </div>
+  </div>
+
+
+<!-- HEADER -->
+
+<!-- TIMELINE -->
+<div class="timeline-bar">
+  <div class="tl-label">Línea de tiempo del plan</div>
+  <div class="tl-track">
+    <div class="tl-fill" id="tlFill" style="width:0%"></div>
+  </div>
+  <div class="tl-markers">
+    <div class="tl-marker">
+      <div class="tl-dot reached" id="tl0"></div>
+      <div class="tl-m-label">Inicio<br>May 21</div>
+    </div>
+    <div class="tl-marker">
+      <div class="tl-dot" id="tl1"></div>
+      <div class="tl-m-label">Sem 4<br>Jun 18</div>
+    </div>
+    <div class="tl-marker">
+      <div class="tl-dot" id="tl2"></div>
+      <div class="tl-m-label">Mes 3<br>Ago 21</div>
+    </div>
+    <div class="tl-marker">
+      <div class="tl-dot" id="tl3"></div>
+      <div class="tl-m-label">Mes 6<br>Nov 21</div>
+    </div>
+    <div class="tl-marker">
+      <div class="tl-dot" id="tl4"></div>
+      <div class="tl-m-label">Mes 12<br>May 27</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- PHASE CARD -->
+  <div class="card green span-4">
+    <div class="card-label">Fase actual</div>
+    <div class="phase-card" id="phaseCard">
+      <div class="phase-icon" id="phaseIcon" style="background:var(--green-dim)">🔥</div>
+      <div class="phase-info">
+        <div class="phase-name" id="phaseName">Recomposición</div>
+        <div class="phase-desc" id="phaseDesc">Reducir grasa visceral, aumentar proteína, elevar HRV. Calorías en mantenimiento.</div>
+        <span class="phase-badge" id="phaseBadge" style="background:var(--green-dim);color:var(--green)">Meses 1-3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERALL SCORE -->
+  <div class="card orange span-8">
+    <div class="card-label">Score general del mes</div>
+    <div class="score-grid">
+      <div class="score-item">
+        <div class="score-num" id="scoreBody" style="color:var(--green)">—</div>
+        <div class="score-name">Cuerpo</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="scoreRecovery" style="color:var(--blue)">—</div>
+        <div class="score-name">Recuperación</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="scoreSleep" style="color:var(--purple)">—</div>
+        <div class="score-name">Sueño</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="scoreStrength" style="color:var(--orange)">—</div>
+        <div class="score-name">Fuerza</div>
+      </div>
+    </div>
+    <div style="margin-top:12px; font-size:11px; color:var(--muted)">Scores 0-100 basados en progreso hacia meta. Se calculan automáticamente al guardar.</div>
+  </div>
+
+  <!-- COMPOSICIÓN CORPORAL -->
+  <div class="card green span-6">
+    <div class="card-label">Composición corporal · InBody mensual</div>
+    <div class="kpi-block">
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Masa muscular esquelética</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-muscle" style="width:0%;background:var(--green)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-muscle" style="color:var(--green)">38.7 kg</span>
+            <span>meta 44.0 kg</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-muscle" value="38.7" step="0.1" min="30" max="60" oninput="updateKPI('muscle',this.value)">
+          <span class="kpi-unit">kg</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Grasa corporal %</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-bf" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-bf" style="color:var(--orange)">21.0 %</span>
+            <span>meta 13.0 %</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-bf" value="21.0" step="0.1" min="5" max="40" oninput="updateKPI('bf',this.value)">
+          <span class="kpi-unit">%</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Grasa visceral</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-visceral" style="width:0%;background:var(--red)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-visceral" style="color:var(--red)">Nivel 8</span>
+            <span>meta Nivel 5</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-visceral" value="8" step="1" min="1" max="20" oninput="updateKPI('visceral',this.value)">
+          <span class="kpi-unit">nivel</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">FFMI</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-ffmi" style="width:0%;background:var(--blue)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-ffmi" style="color:var(--blue)">18.74</span>
+            <span>meta 21.0</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-ffmi" value="18.74" step="0.01" min="10" max="30" oninput="updateKPI('ffmi',this.value)">
+          <span class="kpi-unit">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="reminder-box">
+      <div class="reminder-icon">📋</div>
+      <div class="reminder-text"><strong>Medición InBody:</strong> Mes 3 (Ago 21) y Mes 6 (Nov 21). En ayunas, misma hora que la medición inicial.</div>
+    </div>
+  </div>
+
+  <!-- RECUPERACIÓN + SUEÑO -->
+  <div class="card blue span-6">
+    <div class="card-label">Recuperación & Sueño · promedio semanal</div>
+    <div class="kpi-block">
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">HRV promedio</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-hrv" style="width:0%;background:var(--blue)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-hrv" style="color:var(--blue)">46.3 ms</span>
+            <span>meta 60 ms</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-hrv" value="46.3" step="0.1" min="10" max="120" oninput="updateKPI('hrv',this.value)">
+          <span class="kpi-unit">ms</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">FC en reposo</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-rhr" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-rhr" style="color:var(--orange)">65.9 lpm</span>
+            <span>meta 58 lpm</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-rhr" value="65.9" step="0.1" min="40" max="100" oninput="updateKPI('rhr',this.value)">
+          <span class="kpi-unit">lpm</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Sueño profundo SWS</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-sws" style="width:0%;background:var(--purple)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-sws" style="color:var(--purple)">73 min</span>
+            <span>meta 90 min</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-sws" value="73" step="1" min="0" max="180" oninput="updateKPI('sws',this.value)">
+          <span class="kpi-unit">min</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Recovery score WHOOP</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-recovery" style="width:0%;background:var(--green)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-recovery" style="color:var(--green)">56%</span>
+            <span>meta 70%</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-recovery" value="56.4" step="0.1" min="0" max="100" oninput="updateKPI('recovery',this.value)">
+          <span class="kpi-unit">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUERZA -->
+  <div class="card orange span-6">
+    <div class="card-label">Fuerza · máximo del mes</div>
+    <div class="kpi-block">
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Peso muerto (barra libre)</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-deadlift" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-deadlift" style="color:var(--orange)">60 kg</span>
+            <span>meta 90 kg</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-deadlift" value="60" step="2.5" min="20" max="220" oninput="updateKPI('deadlift',this.value)">
+          <span class="kpi-unit">kg</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Cable Bench Press</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-bench" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-bench" style="color:var(--orange)">40 kg</span>
+            <span>meta 55 kg</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-bench" value="40" step="1.25" min="10" max="150" oninput="updateKPI('bench',this.value)">
+          <span class="kpi-unit">kg</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Cable Row</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-row" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-row" style="color:var(--orange)">45 kg</span>
+            <span>meta 60 kg</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-row" value="45" step="1.25" min="10" max="150" oninput="updateKPI('row',this.value)">
+          <span class="kpi-unit">kg</span>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-meta">
+          <div class="kpi-name">Overhead Press</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="bar-ohp" style="width:0%;background:var(--orange)"></div></div>
+          <div class="kpi-values">
+            <span class="current" id="lbl-ohp" style="color:var(--orange)">30 kg</span>
+            <span>meta 40 kg</span>
+          </div>
+        </div>
+        <div class="kpi-input-wrap">
+          <input type="number" class="kpi-input" id="inp-ohp" value="30" step="1.25" min="10" max="100" oninput="updateKPI('ohp',this.value)">
+          <span class="kpi-unit">kg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST MENSUAL -->
+  <div class="card purple span-6">
+    <div class="card-label">Checklist mensual</div>
+    <div class="checklist">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">InBody mensual completado</div>
+          <div class="check-desc">En ayunas, misma báscula, misma hora</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">Proteína >100g promedio diario</div>
+          <div class="check-desc">Revisar en el diario semanal</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">Creatina todos los días del mes</div>
+          <div class="check-desc">5g, sin saltarse aunque sea día de descanso</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">Protocolo sueño ≥5 noches/semana</div>
+          <div class="check-desc">Magnesio + sin pantallas + Eight Sleep configurado</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">3 sesiones de pesas/semana completadas</div>
+          <div class="check-desc">Push / Pull / Legs — con RPE 7-8 real</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <div class="check-content">
+          <div class="check-name">Labs de sangre (solo Mes 3)</div>
+          <div class="check-desc">Glucosa, insulina, testosterona, D3, PCR, HbA1c</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORIAL DE MÚSCULO -->
+  <div class="card green span-8">
+    <div class="card-label">Historial — masa muscular esquelética (kg)</div>
+    <div class="history-cols" id="muscleHistory">
+      <!-- Generated by JS -->
+    </div>
+    <div style="margin-top:12px; font-size:11px; color:var(--muted)">Actualiza cada mes con el dato de InBody. Meta: +5.3 kg en 12 meses.</div>
+  </div>
+
+  <!-- PESO -->
+  <div class="card blue span-4">
+    <div class="card-label">Peso corporal</div>
+    <div class="stat-val" id="weightVal" style="color:var(--blue)">85.6</div>
+    <div class="stat-label">kg actuales</div>
+    <div class="stat-delta delta-neutral" id="weightDelta">— vs inicio</div>
+    <div style="margin-top:16px;">
+      <div style="font-size:11px; color:var(--muted); margin-bottom:6px;">Actualizar</div>
+      <input type="number" class="kpi-input" id="inp-weight" value="85.6" step="0.1" min="50" max="150"
+        style="width:100%;" oninput="updateWeight(this.value)" placeholder="85.6">
+    </div>
+  </div>
+
+  <!-- NOTAS DEL MES -->
+  <div class="card span-12">
+    <div class="card-label">Notas del mes — qué funcionó, qué ajustar</div>
+    <textarea class="month-notes" id="monthNotes"
+      placeholder="Cómo fue el mes, qué mejoró, qué costó trabajo, ajustes al plan..."></textarea>
+    <button class="save-btn" onclick="saveMonth()">Guardar mes</button>
+  </div>
+
+</div>
+
+
+
+
+</div>
+
+<!-- SHARED TOAST -->
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+
+
+<div class="toast" id="toast"></div>
+<script>
+
+// ============================================================
+// NAVIGATION + DRAWER
+// ============================================================
+// ============================================
+// NAVIGATION
+// ============================================
+let currentSection = 'diario';
+let currentDiarioPage = 'hoy';
+
+const SECTION_NAMES = {
+  'diario-hoy': 'Hoy',
+  'diario-suenos': 'Sueño',
+  'diario-semana': 'Semana',
+  'diario-comida': 'Restaurantes',
+  'nutricion': 'Plan Nutricional',
+  'dashboard': 'Dashboard Mensual',
+};
+
+function navigateTo(section, subpage) {
+  // Hide all sections
+  document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
+  // Remove all nav active states
+  document.querySelectorAll('.drawer-item').forEach(i => i.classList.remove('active'));
+
+  // Show target section
+  document.getElementById('section-' + section).classList.add('active');
+
+  // If diario, also switch sub-page
+  if (section === 'diario' && subpage) {
+    currentDiarioPage = subpage;
+    // Use existing showPage from diario
+    showPage_diario(subpage);
+    const navId = 'nav-diario-' + subpage;
+    const el = document.getElementById(navId);
+    if (el) el.classList.add('active');
+    document.getElementById('topbarCurrent').textContent = SECTION_NAMES['diario-' + subpage] || subpage;
+  } else {
+    const navId = 'nav-' + section;
+    const el = document.getElementById(navId);
+    if (el) el.classList.add('active');
+    document.getElementById('topbarCurrent').textContent = SECTION_NAMES[section] || section;
+  }
+
+  currentSection = section;
+  closeDrawer();
+}
+
+function toggleDrawer() {
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('hamburgerBtn');
+  const isOpen = drawer.classList.contains('open');
+  drawer.classList.toggle('open', !isOpen);
+  overlay.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
+}
+
+// Override diario's showPage to work with new nav
+function showPage_diario(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + id);
+  if (target) target.classList.add('active');
+}
+
+// Patch old showPage calls in diario
+function showPage(id) {
+  showPage_diario(id);
+  currentDiarioPage = id;
+  // Update drawer active state
+  document.querySelectorAll('.drawer-item').forEach(i => i.classList.remove('active'));
+  const navEl = document.getElementById('nav-diario-' + id);
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('topbarCurrent').textContent = SECTION_NAMES['diario-' + id] || id;
+}
+
+// Date display
+function setTopbarDate() {
+  const d = new Date();
+  const opts = { weekday:'short', day:'numeric', month:'short' };
+  document.getElementById('topbarDate').textContent = d.toLocaleDateString('es-MX', opts);
+}
+
+// ============================================
+
+// ============================================================
+// DIARIO
+// ============================================================
+
+// ---- STATE ----
+let state = {
+  proteinTotal: 0,
+  meals: {},
+  wheyExtra: false,
+  supps: {},
+  stress: 0,
+  notes: '',
+  sleepSteps: {},
+  swsMin: 73,
+  sleepHrs: 6.8,
+  weekData: {}
+};
+
+// Load from localStorage
+function loadState() {
+  const today = getToday();
+  const saved = localStorage.getItem('wellness_' + today);
+  if (saved) {
+    try { state = {...state, ...JSON.parse(saved)}; } catch(e) {}
+  }
+  renderAll();
+}
+
+function saveState() {
+  const today = getToday();
+  localStorage.setItem('wellness_' + today, JSON.stringify(state));
+}
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// ---- PROTEIN RING ----
+function updateProtein() {
+  const total = state.proteinTotal;
+  const target = 154;
+  const pct = Math.min(total / target, 1);
+  const circumference = 226;
+  const offset = circumference - (pct * circumference);
+
+  document.getElementById('protCircle').style.strokeDashoffset = offset;
+  document.getElementById('protVal').textContent = total;
+
+  const remaining = Math.max(target - total, 0);
+  const el = document.getElementById('protRemaining');
+  if (remaining === 0) {
+    el.textContent = '¡Meta alcanzada! 🎯';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = `Te faltan ${remaining}g`;
+    el.style.color = 'var(--orange)';
+  }
+}
+
+// ---- MEALS ----
+function toggleMeal(el, prot) {
+  const name = el.dataset.name;
+  if (el.classList.contains('checked')) {
+    el.classList.remove('checked');
+    state.proteinTotal -= prot;
+    delete state.meals[name];
+  } else {
+    el.classList.add('checked');
+    state.proteinTotal += prot;
+    state.meals[name] = prot;
+  }
+  updateProtein();
+  saveState();
+  showToast(el.classList.contains('checked') ? `+${prot}g proteína registrado` : 'Comida desmarcada');
+}
+
+function toggleWheyExtra() {
+  const btn = document.getElementById('wheyExtra');
+  state.wheyExtra = !state.wheyExtra;
+  if (state.wheyExtra) {
+    btn.classList.add('active');
+    btn.innerHTML = '✓ Whey post-pádel tomado (+25g)';
+    state.proteinTotal += 25;
+  } else {
+    btn.classList.remove('active');
+    btn.innerHTML = '<span>+</span> ¿Tomaste whey post-pádel? (+25g)';
+    state.proteinTotal -= 25;
+  }
+  updateProtein();
+  saveState();
+}
+
+// ---- SUPPLEMENTS ----
+function toggleSupp(btn) {
+  btn.classList.toggle('on');
+  const name = btn.previousElementSibling.querySelector('.supp-name-text').textContent;
+  state.supps[name] = btn.classList.contains('on');
+  saveState();
+  showToast(btn.classList.contains('on') ? '✓ Suplemento marcado' : 'Suplemento desmarcado');
+}
+
+// ---- STRESS ----
+function selectStress(level, btn) {
+  document.querySelectorAll('.stress-btn').forEach(b => {
+    b.classList.remove('selected-1', 'selected-2', 'selected-3');
+  });
+  const cls = level <= 2 ? 'selected-1' : level <= 3 ? 'selected-2' : 'selected-3';
+  btn.classList.add(cls);
+  state.stress = level;
+  saveState();
+}
+
+// ---- SLEEP STEPS ----
+function toggleSleep(el) {
+  el.classList.toggle('done');
+  const title = el.querySelector('.sleep-step-title').textContent;
+  state.sleepSteps[title] = el.classList.contains('done');
+  saveState();
+  updateWeekMetrics();
+}
+
+// ---- SLEEP INPUTS ----
+function updateSleep() {
+  const val = parseFloat(document.getElementById('swsInput').value) || 0;
+  state.swsMin = val;
+  const pct = Math.min(val / 90 * 100, 100);
+  document.getElementById('swsBar').style.width = pct + '%';
+  document.getElementById('swsBar').style.background = val >= 90 ? 'var(--green)' : val >= 70 ? 'var(--orange)' : 'var(--red)';
+  saveState();
+}
+
+function updateSleepHrs() {
+  const val = parseFloat(document.getElementById('sleepHrsInput').value) || 0;
+  state.sleepHrs = val;
+  const pct = Math.min(val / 7.5 * 100, 100);
+  document.getElementById('sleepHrsBar').style.width = pct + '%';
+  saveState();
+}
+
+// ---- RESTAURANTS ----
+function showRest(id, btn) {
+  document.querySelectorAll('.rest-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.rest-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('rest-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- NAV ----
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ---- WEEK GRID ----
+function buildWeekGrid() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+  const days = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  const schedule = [
+    ['pesas'],
+    ['golf'],
+    ['pesas'],
+    ['padel'],
+    ['golf'],
+    ['pesas'],
+    ['rest']
+  ];
+
+  const grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const isToday = d.toDateString() === today.toDateString();
+    const div = document.createElement('div');
+    div.className = 'week-day' + (isToday ? ' today' : '');
+    div.innerHTML = `
+      <div class="week-day-name">${days[i]}</div>
+      <div class="week-day-num">${d.getDate()}</div>
+      <div class="week-dot-row">
+        ${schedule[i].map(s => `<div class="w-dot ${s}"></div>`).join('')}
+      </div>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+function updateWeekMetrics() {
+  const sleepDone = Object.values(state.sleepSteps).filter(v => v).length;
+  const totalSteps = 7;
+  const pct = sleepDone / totalSteps * 100;
+  document.getElementById('sleepProtocolVal').textContent = `${sleepDone} / ${totalSteps}`;
+  document.getElementById('sleepProtocolBar').style.width = pct + '%';
+}
+
+// ---- SAVE DAY ----
+function saveDay() {
+  state.notes = document.getElementById('dailyNotes').value;
+  saveState();
+  showToast('✓ Día guardado');
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ---- DATE ----
+function setDate() {
+  const d = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'short' };
+  document.getElementById('topbarDate').textContent = d.toLocaleDateString('es-MX', options);
+}
+
+// ---- RENDER ALL ----
+function renderAll() {
+  updateProtein();
+  updateSleep();
+  updateSleepHrs();
+  updateWeekMetrics();
+
+  // Restore meal chips
+  document.querySelectorAll('.meal-chip').forEach(chip => {
+    const name = chip.dataset.name;
+    if (state.meals && state.meals[name]) chip.classList.add('checked');
+  });
+
+  // Restore whey extra
+  if (state.wheyExtra) {
+    const btn = document.getElementById('wheyExtra');
+    btn.classList.add('active');
+    btn.innerHTML = '✓ Whey post-pádel tomado (+25g)';
+  }
+
+  // Restore stress
+  if (state.stress > 0) {
+    const btns = document.querySelectorAll('.stress-btn');
+    btns.forEach((btn, i) => {
+      if (i + 1 === state.stress) {
+        const cls = state.stress <= 2 ? 'selected-1' : state.stress <= 3 ? 'selected-2' : 'selected-3';
+        btn.classList.add(cls);
+      }
+    });
+  }
+
+  // Restore sleep steps
+  if (state.sleepSteps) {
+    document.querySelectorAll('.sleep-step').forEach(step => {
+      const title = step.querySelector('.sleep-step-title').textContent;
+      if (state.sleepSteps[title]) step.classList.add('done');
+    });
+  }
+
+  // Restore notes
+  if (state.notes) document.getElementById('dailyNotes').value = state.notes;
+}
+
+// ---- INIT ----
+setDate();
+buildWeekGrid();
+loadState();
+
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+
+// ---- CONFIG ----
+const METRICS = {
+  muscle:   { start: 38.7, target: 44.0,  dir: 'up',   color: '#39ff85' },
+  bf:       { start: 21.0, target: 13.0,  dir: 'down', color: '#ff8c42' },
+  visceral: { start: 8,    target: 5,     dir: 'down', color: '#f87171' },
+  ffmi:     { start: 18.74,target: 21.0,  dir: 'up',   color: '#38bdf8' },
+  hrv:      { start: 46.3, target: 60.0,  dir: 'up',   color: '#38bdf8' },
+  rhr:      { start: 65.9, target: 58.0,  dir: 'down', color: '#ff8c42' },
+  sws:      { start: 73,   target: 90,    dir: 'up',   color: '#c084fc' },
+  recovery: { start: 56.4, target: 70.0,  dir: 'up',   color: '#39ff85' },
+  deadlift: { start: 60,   target: 90,    dir: 'up',   color: '#ff8c42' },
+  bench:    { start: 40,   target: 55,    dir: 'up',   color: '#ff8c42' },
+  row:      { start: 45,   target: 60,    dir: 'up',   color: '#ff8c42' },
+  ohp:      { start: 30,   target: 40,    dir: 'up',   color: '#ff8c42' },
+};
+
+const PHASES = [
+  { name: 'Recomposición', icon: '🔥', range: 'Meses 1–3', color: '#39ff85',
+    desc: 'Reducir grasa visceral, aumentar proteína, elevar HRV. Calorías en mantenimiento (~2,750 kcal).' },
+  { name: 'Lean Bulk', icon: '💪', range: 'Meses 4–6', color: '#fbbf24',
+    desc: 'Una vez visceral en nivel 5-6. Superávit de 200-300 kcal. Aquí crece el músculo de verdad.' },
+  { name: 'Consolidación', icon: '🎯', range: 'Meses 7–12', color: '#c084fc',
+    desc: 'Periodización ondulante. Maximizar fuerza relativa y definición. SMMI objetivo: 12.3 kg/m².' },
+];
+
+// ---- STATE ----
+let currentMonth = 0; // offset from start (0 = Mayo 2026)
+const START_DATE = new Date(2026, 4, 21); // May 21 2026
+let monthData = {};
+
+function getMonthKey(offset) {
+  const d = new Date(START_DATE);
+  d.setMonth(d.getMonth() + offset);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+function getMonthLabel(offset) {
+  const d = new Date(START_DATE);
+  d.setMonth(d.getMonth() + offset);
+  return d.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+}
+
+function loadAll() {
+  const saved = localStorage.getItem('dashboard_carlos');
+  if (saved) {
+    try { monthData = JSON.parse(saved); } catch(e) {}
+  }
+}
+
+function saveAll() {
+  localStorage.setItem('dashboard_carlos', JSON.stringify(monthData));
+}
+
+function getCurrentData() {
+  const key = getMonthKey(currentMonth);
+  if (!monthData[key]) {
+    monthData[key] = {
+      muscle: 38.7, bf: 21.0, visceral: 8, ffmi: 18.74,
+      hrv: 46.3, rhr: 65.9, sws: 73, recovery: 56.4,
+      deadlift: 60, bench: 40, row: 45, ohp: 30,
+      weight: 85.6, notes: '', checks: {}
+    };
+  }
+  return monthData[key];
+}
+
+// ---- RENDER ----
+function renderDash() {
+  document.getElementById('monthLabel').textContent = getMonthLabel(currentMonth);
+  const data = getCurrentData();
+
+  // Fill inputs
+  Object.keys(METRICS).forEach(id => {
+    const inp = document.getElementById('inp-' + id);
+    if (inp) inp.value = data[id];
+    updateKPI(id, data[id], false);
+  });
+
+  document.getElementById('inp-weight').value = data.weight;
+  document.getElementById('weightVal').textContent = data.weight;
+  updateWeightDelta(data.weight);
+
+  document.getElementById('monthNotes').value = data.notes || '';
+
+  // Restore checks
+  document.querySelectorAll('.check-item').forEach((el, i) => {
+    el.classList.toggle('done', !!(data.checks && data.checks[i]));
+    el.querySelector('.check-box').textContent = (data.checks && data.checks[i]) ? '✓' : '';
+  });
+
+  updatePhase();
+  updateTimeline();
+  updateScores(data);
+  buildMuscleHistory();
+}
+
+function updateKPI(id, val, save = true) {
+  val = parseFloat(val) || 0;
+  const m = METRICS[id];
+  if (!m) return;
+
+  let pct;
+  if (m.dir === 'up') {
+    pct = Math.min((val - m.start) / (m.target - m.start) * 100, 100);
+  } else {
+    pct = Math.min((m.start - val) / (m.start - m.target) * 100, 100);
+  }
+  pct = Math.max(pct, 0);
+
+  const bar = document.getElementById('bar-' + id);
+  const lbl = document.getElementById('lbl-' + id);
+  if (bar) bar.style.width = pct + '%';
+
+  const units = { muscle:'kg', bf:'%', visceral:'nivel', ffmi:'', hrv:'ms', rhr:'lpm', sws:'min', recovery:'%', deadlift:'kg', bench:'kg', row:'kg', ohp:'kg' };
+  if (lbl) {
+    lbl.textContent = val + (units[id] ? ' ' + units[id] : '');
+    lbl.style.color = pct >= 80 ? '#39ff85' : pct >= 40 ? '#ff8c42' : '#f87171';
+  }
+
+  if (save) {
+    getCurrentData()[id] = val;
+  }
+}
+
+function updateWeight(val) {
+  val = parseFloat(val) || 85.6;
+  document.getElementById('weightVal').textContent = val;
+  updateWeightDelta(val);
+  getCurrentData().weight = val;
+}
+
+function updateWeightDelta(val) {
+  const start = 85.6;
+  const diff = val - start;
+  const el = document.getElementById('weightDelta');
+  if (diff === 0) { el.textContent = '— vs inicio'; el.className = 'stat-delta delta-neutral'; return; }
+  const sign = diff > 0 ? '+' : '';
+  el.textContent = sign + diff.toFixed(1) + ' kg vs inicio';
+  // For weight, going down slightly is good (fat loss)
+  el.className = diff < 0 ? 'stat-delta delta-down-good' : 'stat-delta delta-neutral';
+}
+
+function updatePhase() {
+  const month = currentMonth;
+  let phaseIdx = 0;
+  if (month >= 3 && month < 6) phaseIdx = 1;
+  else if (month >= 6) phaseIdx = 2;
+
+  const p = PHASES[phaseIdx];
+  document.getElementById('phaseName').textContent = p.name;
+  document.getElementById('phaseDesc').textContent = p.desc;
+  document.getElementById('phaseBadge').textContent = p.range;
+  document.getElementById('phaseBadge').style.color = p.color;
+  document.getElementById('phaseBadge').style.background = p.color + '20';
+  document.getElementById('phaseIcon').style.background = p.color + '20';
+}
+
+function updateTimeline() {
+  const totalWeeks = 52;
+  const elapsed = Math.min(currentMonth * 4, totalWeeks);
+  const pct = elapsed / totalWeeks * 100;
+  document.getElementById('tlFill').style.width = pct + '%';
+
+  const checkpoints = [0, 4, 13, 26, 52]; // weeks
+  const elapsedW = currentMonth * 4;
+  checkpoints.forEach((w, i) => {
+    const dot = document.getElementById('tl' + i);
+    if (!dot) return;
+    if (elapsedW > w) {
+      dot.className = 'tl-dot reached';
+    } else if (elapsedW === w) {
+      dot.className = 'tl-dot current';
+    } else {
+      dot.className = 'tl-dot';
+    }
+  });
+}
+
+function updateScores(data) {
+  const scores = {
+    scoreBody: calcScore([
+      { val: data.muscle, start: 38.7, target: 44.0, dir: 'up' },
+      { val: data.bf, start: 21.0, target: 13.0, dir: 'down' },
+      { val: data.visceral, start: 8, target: 5, dir: 'down' },
+    ]),
+    scoreRecovery: calcScore([
+      { val: data.hrv, start: 46.3, target: 60.0, dir: 'up' },
+      { val: data.rhr, start: 65.9, target: 58.0, dir: 'down' },
+      { val: data.recovery, start: 56.4, target: 70.0, dir: 'up' },
+    ]),
+    scoreSleep: calcScore([
+      { val: data.sws, start: 73, target: 90, dir: 'up' },
+    ]),
+    scoreStrength: calcScore([
+      { val: data.deadlift, start: 60, target: 90, dir: 'up' },
+      { val: data.bench, start: 40, target: 55, dir: 'up' },
+      { val: data.row, start: 45, target: 60, dir: 'up' },
+      { val: data.ohp, start: 30, target: 40, dir: 'up' },
+    ]),
+  };
+
+  Object.entries(scores).forEach(([id, score]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = score;
+      el.style.color = score >= 70 ? '#39ff85' : score >= 40 ? '#ff8c42' : '#f87171';
+    }
+  });
+}
+
+function calcScore(items) {
+  if (currentMonth === 0) return '—';
+  let total = 0;
+  items.forEach(item => {
+    let pct;
+    if (item.dir === 'up') {
+      pct = (item.val - item.start) / (item.target - item.start);
+    } else {
+      pct = (item.start - item.val) / (item.start - item.target);
+    }
+    total += Math.max(0, Math.min(pct, 1));
+  });
+  return Math.round((total / items.length) * 100);
+}
+
+function buildMuscleHistory() {
+  const container = document.getElementById('muscleHistory');
+  container.innerHTML = '';
+  const monthNames = ['May','Jun','Jul','Ago','Sep','Oct','Nov'];
+  const target = 44.0;
+  const start = 38.7;
+
+  for (let i = 0; i <= 5; i++) {
+    const key = getMonthKey(i);
+    const d = monthData[key];
+    const val = d ? d.muscle : (i === 0 ? 38.7 : null);
+    const isCurrent = i === currentMonth;
+
+    const heightPct = val ? Math.min(((val - 36) / (target - 36)) * 100, 100) : 0;
+    const color = isCurrent ? '#38bdf8' : (val ? '#39ff85' : '#252830');
+
+    const col = document.createElement('div');
+    col.className = 'hist-col';
+    col.innerHTML = `
+      <div class="hist-val" style="color:${color}">${val ? val.toFixed(1) : '—'}</div>
+      <div class="hist-bar-wrap">
+        <div class="hist-bar" style="height:${heightPct}%;background:${color};"></div>
+      </div>
+      <div class="hist-label" style="color:${isCurrent ? '#38bdf8' : ''}">${monthNames[i] || 'M'+i}</div>
+    `;
+    container.appendChild(col);
+  }
+}
+
+// ---- CHECKS ----
+function toggleCheck(el) {
+  el.classList.toggle('done');
+  const checkBox = el.querySelector('.check-box');
+  const isDone = el.classList.contains('done');
+  checkBox.textContent = isDone ? '✓' : '';
+
+  const items = document.querySelectorAll('.check-item');
+  const data = getCurrentData();
+  if (!data.checks) data.checks = {};
+  items.forEach((item, i) => {
+    data.checks[i] = item.classList.contains('done');
+  });
+}
+
+// ---- NAV ----
+function prevMonth() {
+  if (currentMonth > 0) { currentMonth--; renderDash(); }
+}
+function nextMonth() {
+  if (currentMonth < 11) { currentMonth++; renderDash(); }
+}
+
+// ---- SAVE ----
+function saveMonth() {
+  const data = getCurrentData();
+  data.notes = document.getElementById('monthNotes').value;
+  saveAll();
+  buildMuscleHistory();
+  updateScores(data);
+  showToastDash('✓ Mes guardado');
+}
+
+// ---- TOAST ----
+function showToastDash(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+
+
+// ============================================================
+// INIT
+// ============================================================
+(function initApp() {
+  setTopbarDate();
+  setDate();
+  loadState();
+  loadAll();
+  renderDash();
+})();
+
+</script>
+</body>
+</html>
