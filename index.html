@@ -1861,6 +1861,96 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 #page-hoy { padding-top: 0 !important; }
 #page-hoy .week-strip-wrap { padding-top: 10px; }
 
+
+/* WEEKLY SUMMARY */
+.ws-score-bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.ws-score-circle {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--s2); border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px;
+  color: var(--muted); flex-shrink: 0;
+  transition: all 0.4s;
+}
+.ws-score-circle.green { border-color: var(--green); color: var(--green); background: rgba(168,255,87,0.08); }
+.ws-score-circle.orange { border-color: var(--orange); color: var(--orange); background: rgba(255,159,67,0.08); }
+.ws-score-circle.red { border-color: var(--red); color: var(--red); background: rgba(255,107,107,0.08); }
+.ws-score-label {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  margin-bottom: 3px;
+}
+.ws-score-sub { font-size: 11px; color: var(--muted); }
+
+.ws-section-title {
+  font-family: 'Syne Mono', monospace; font-size: 9px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ws-section-title::after { content: ''; flex:1; height:1px; background: var(--border); }
+
+/* Day grid */
+.ws-day-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+}
+.ws-day-col {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.ws-day-name {
+  font-family: 'Syne Mono', monospace; font-size: 9px;
+  color: var(--muted); text-transform: uppercase;
+}
+.ws-day-score {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--s2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px;
+  color: var(--muted); transition: all 0.2s;
+}
+.ws-day-score.score-high { background: rgba(168,255,87,0.12); border-color: rgba(168,255,87,0.3); color: var(--green); }
+.ws-day-score.score-mid  { background: rgba(255,159,67,0.12); border-color: rgba(255,159,67,0.3); color: var(--orange); }
+.ws-day-score.score-low  { background: rgba(255,107,107,0.12); border-color: rgba(255,107,107,0.3); color: var(--red); }
+.ws-day-score.score-future { opacity: 0.3; }
+.ws-day-pct { font-family: 'Syne Mono', monospace; font-size: 9px; color: var(--muted); }
+
+/* Category breakdown */
+.ws-cat-grid { display: flex; flex-direction: column; gap: 8px; }
+.ws-cat-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+}
+.ws-cat-icon { font-size: 14px; flex-shrink: 0; }
+.ws-cat-info { flex: 1; min-width: 0; }
+.ws-cat-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.ws-cat-bar-bg {
+  height: 4px; background: var(--s3); border-radius: 2px; overflow: hidden;
+}
+.ws-cat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.ws-cat-count {
+  font-family: 'Syne Mono', monospace; font-size: 11px;
+  color: var(--muted); white-space: nowrap; flex-shrink: 0;
+}
+
+/* Streak */
+.ws-streak-wrap {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.ws-streak-num {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px;
+  line-height: 1; color: var(--orange); flex-shrink: 0;
+}
+.ws-streak-info {}
+.ws-streak-label { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.ws-streak-sub { font-size: 11px; color: var(--muted); }
+
 </style>
 </head>
 <body>
@@ -2226,59 +2316,47 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 
 <!-- PAGE: SEMANA -->
 <div class="page" id="page-semana">
-  <div class="sec-label">vista semanal</div>
-  <div class="page-title">Esta semana</div>
 
-  <div class="week-grid" id="weekGrid"></div>
-
-  <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px; font-size:11px; color:var(--muted); font-family:'Syne Mono',monospace;">
-    <span><span class="w-dot pesas" style="display:inline-block;margin-right:5px;"></span>Pesas</span>
-    <span><span class="w-dot golf" style="display:inline-block;margin-right:5px;"></span>Golf</span>
-    <span><span class="w-dot padel" style="display:inline-block;margin-right:5px;"></span>Pádel</span>
-    <span><span class="w-dot rest" style="display:inline-block;margin-right:5px;"></span>Descanso</span>
+  <!-- WEEK NAVIGATOR -->
+  <div class="week-strip-wrap">
+    <button class="week-strip-arrow" onclick="shiftWeek(-1); buildWeeklySummary();">&#8249;</button>
+    <div class="week-strip" id="weekStripSemana"></div>
+    <button class="week-strip-arrow" onclick="shiftWeek(1); buildWeeklySummary();">&#8250;</button>
   </div>
 
-  <div class="card">
-    <div class="card-title">
-      <span style="color:var(--green)">◉</span> Métricas de la semana
-    </div>
-    <div class="metric-grid">
-      <div class="metric-card">
-        <div class="metric-val" style="color:var(--green)" id="daysTrainedVal">0</div>
-        <div class="metric-label">días entreno</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val" style="color:var(--orange)" id="avgProtVal">—</div>
-        <div class="metric-label">prot. promedio</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val" style="color:var(--purple)" id="avgSWSVal">—</div>
-        <div class="metric-label">SWS prom.</div>
-      </div>
-    </div>
-
-    <div class="prog-bar-wrap">
-      <div class="prog-bar-header">
-        <span class="prog-bar-label">Días protocolo sueño completado</span>
-        <span class="prog-bar-val" id="sleepProtocolVal">0 / 7</span>
-      </div>
-      <div class="prog-bar-bg"><div class="prog-bar-fill" id="sleepProtocolBar" style="width:0%;background:var(--purple);"></div></div>
-    </div>
-    <div class="prog-bar-wrap">
-      <div class="prog-bar-header">
-        <span class="prog-bar-label">Días proteína >100g</span>
-        <span class="prog-bar-val" id="protDaysVal">0 / 7</span>
-      </div>
-      <div class="prog-bar-bg"><div class="prog-bar-fill" id="protDaysBar" style="width:0%;background:var(--green);"></div></div>
-    </div>
-    <div class="prog-bar-wrap">
-      <div class="prog-bar-header">
-        <span class="prog-bar-label">Días creatina tomada</span>
-        <span class="prog-bar-val" id="creatineDaysVal">0 / 7</span>
-      </div>
-      <div class="prog-bar-bg"><div class="prog-bar-fill" id="creatineDaysBar" style="width:0%;background:var(--blue);"></div></div>
+  <!-- WEEK SCORE -->
+  <div class="ws-score-bar" id="wsScoreBar">
+    <div class="ws-score-circle" id="wsScoreCircle">—</div>
+    <div class="ws-score-info">
+      <div class="ws-score-label" id="wsScoreLabel">Semana del —</div>
+      <div class="ws-score-sub" id="wsScoreSub">Marca los eventos del día para ver tu score</div>
     </div>
   </div>
+
+  <!-- DAILY COMPLIANCE GRID -->
+  <div style="padding: 0 16px; margin-bottom: 16px;">
+    <div class="ws-section-title">Cumplimiento diario</div>
+    <div class="ws-day-grid" id="wsDayGrid">
+      <!-- Built by buildWeeklySummary() -->
+    </div>
+  </div>
+
+  <!-- CATEGORY BREAKDOWN -->
+  <div style="padding: 0 16px; margin-bottom: 16px;">
+    <div class="ws-section-title">Por categoría</div>
+    <div class="ws-cat-grid" id="wsCatGrid">
+      <!-- Built by buildWeeklySummary() -->
+    </div>
+  </div>
+
+  <!-- STREAK -->
+  <div style="padding: 0 16px 32px;">
+    <div class="ws-section-title">Racha actual</div>
+    <div class="ws-streak-wrap" id="wsStreakWrap">
+      <!-- Built by buildWeeklySummary() -->
+    </div>
+  </div>
+
 </div>
 
 
@@ -3150,6 +3228,9 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 
 
 
+
+
+
 // ============================================================
 // SUPABASE
 // ============================================================
@@ -3381,6 +3462,204 @@ async function loadDayData() {
   renderAll();
 }
 
+
+// ============================================================
+// WEEKLY SUMMARY
+// ============================================================
+function buildWeeklySummary() {
+  if (!document.getElementById('weekStripSemana')) return;
+  buildWeekStripFor('weekStripSemana');
+  computeWeekData();
+}
+
+function buildWeekStripFor(stripId) {
+  const strip = document.getElementById(stripId);
+  if (!strip) return;
+  strip.innerHTML = '';
+  const anchor = new Date();
+  anchor.setDate(anchor.getDate() + weekOffset * 7);
+  const dow = anchor.getDay();
+  const monday = new Date(anchor);
+  monday.setDate(anchor.getDate() - (dow === 0 ? 6 : dow - 1));
+  const todayStr = localDateStr();
+  const days = ['Dom','Lun','Mar','Mi\u00E9','Jue','Vie','S\u00E1b'];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = localDateStr(d);
+    const isToday = dateStr === todayStr;
+    const isFuture = dateStr > todayStr;
+    const todayDow = new Date().getDay();
+    const mondayOffset2 = -(todayDow === 0 ? 6 : todayDow - 1);
+    const diff = i + weekOffset * 7 + mondayOffset2;
+    const isSelected = diff === dayOffset;
+    const hasLocal = !!localStorage.getItem('wellness_' + dateStr);
+    const wrap = document.createElement('div');
+    wrap.className = 'day-circle-wrap' + (isSelected ? ' selected-wrap' : '');
+    wrap.onclick = () => { selectDay(diff); if (document.getElementById('page-hoy')) navigateTo('diario','hoy'); };
+    const circle = document.createElement('div');
+    let cls = 'day-circle';
+    if (isSelected) cls += ' selected';
+    else if (isToday) cls += ' today-ring';
+    if (isFuture) cls += ' future';
+    if (hasLocal && !isSelected) cls += ' has-data';
+    circle.className = cls;
+    circle.textContent = d.getDate();
+    const label = document.createElement('div');
+    label.className = 'day-circle-label';
+    label.textContent = days[d.getDay()];
+    wrap.appendChild(circle);
+    wrap.appendChild(label);
+    strip.appendChild(wrap);
+  }
+}
+
+function computeWeekData() {
+  if (!document.getElementById('wsDayGrid')) return;
+  const anchor = new Date();
+  anchor.setDate(anchor.getDate() + weekOffset * 7);
+  const dow = anchor.getDay();
+  const monday = new Date(anchor);
+  monday.setDate(anchor.getDate() - (dow === 0 ? 6 : dow - 1));
+  const todayStr = localDateStr();
+  const dayNames = ['Lun','Mar','Mi\u00E9','Jue','Vie','S\u00E1b','Dom'];
+
+  // Collect data for each day of the week
+  const days = [];
+  let totalScore = 0;
+  let scoredDays = 0;
+  let proteinDays = 0;
+  let workoutDays = 0;
+  let suppDays = 0;
+  let sleepDays = 0;
+  let streakCount = 0;
+  let streakActive = true;
+
+  // DAY_SCHEDULE keys that count per category
+  const workoutKeys = ['workout','golf','golf_1','golf_2','padel'];
+  const suppKeys = ['supps_morning','supps_night','creatina'];
+  const sleepKeys = ['sleep_protocol'];
+  const mealKeys = ['pre_entreno','pre_golf','desayuno','comida','cena','whey_entreno','whey_post','whey_padel'];
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = localDateStr(d);
+    const isFuture = dateStr > todayStr;
+    const saved = localStorage.getItem('wellness_' + dateStr);
+    let dayData = null;
+    if (saved) { try { dayData = JSON.parse(saved); } catch(e) {} }
+
+    // Get scheduled events for this day
+    const sched = DAY_SCHEDULE[d.getDay()];
+    const totalEvents = sched ? sched.events.filter(e => e.key !== 'golf_1' && e.key !== 'golf_2' || e.key === 'golf_1').length : 0;
+    const meals = dayData ? (dayData.meals || {}) : {};
+    const completedEvents = Object.keys(meals).length;
+    const pct = totalEvents > 0 ? Math.round((completedEvents / totalEvents) * 100) : 0;
+
+    // Protein total
+    const protTotal = dayData ? (dayData.proteinTotal || 0) : 0;
+    const hasProtein = protTotal >= 100;
+    const hasWorkout = workoutKeys.some(k => meals[k] !== undefined);
+    const hasSupps = suppKeys.filter(k => meals[k] !== undefined).length >= 2;
+    const hasSleep = sleepKeys.some(k => meals[k] !== undefined);
+
+    if (!isFuture && dayData) {
+      if (hasProtein) proteinDays++;
+      if (hasWorkout) workoutDays++;
+      if (hasSupps) suppDays++;
+      if (hasSleep) sleepDays++;
+      totalScore += pct;
+      scoredDays++;
+      if (streakActive && pct >= 50) streakCount++;
+      else if (!isFuture) streakActive = false;
+    }
+
+    days.push({ dateStr, dayName: dayNames[i], pct, isFuture, hasData: !!dayData, d });
+  }
+
+  const avgScore = scoredDays > 0 ? Math.round(totalScore / scoredDays) : 0;
+
+  // Update score circle
+  const circle = document.getElementById('wsScoreCircle');
+  const label = document.getElementById('wsScoreLabel');
+  const sub = document.getElementById('wsScoreSub');
+  if (circle) {
+    circle.textContent = scoredDays > 0 ? avgScore + '%' : '—';
+    circle.className = 'ws-score-circle' + (avgScore >= 70 ? ' green' : avgScore >= 40 ? ' orange' : avgScore > 0 ? ' red' : '');
+  }
+  // Week label
+  const weekStart = days[0].d;
+  const weekEnd = days[6].d;
+  const opts = { day: 'numeric', month: 'short' };
+  if (label) label.textContent = weekStart.toLocaleDateString('es-MX', opts) + ' — ' + weekEnd.toLocaleDateString('es-MX', opts);
+  if (sub) sub.textContent = scoredDays > 0 ? 'Basado en ' + scoredDays + ' d\u00EDa' + (scoredDays > 1 ? 's' : '') + ' registrados' : 'Sin registros esta semana';
+
+  // Day grid
+  const grid = document.getElementById('wsDayGrid');
+  if (grid) {
+    grid.innerHTML = '';
+    days.forEach(day => {
+      const col = document.createElement('div');
+      col.className = 'ws-day-col';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'ws-day-name';
+      nameEl.textContent = day.dayName;
+      const scoreEl = document.createElement('div');
+      let cls = 'ws-day-score';
+      if (day.isFuture) cls += ' score-future';
+      else if (day.pct >= 70) cls += ' score-high';
+      else if (day.pct >= 40) cls += ' score-mid';
+      else if (day.hasData) cls += ' score-low';
+      scoreEl.className = cls;
+      scoreEl.textContent = day.hasData ? day.pct + '%' : '—';
+      const pctEl = document.createElement('div');
+      pctEl.className = 'ws-day-pct';
+      col.appendChild(nameEl);
+      col.appendChild(scoreEl);
+      col.appendChild(pctEl);
+      grid.appendChild(col);
+    });
+  }
+
+  // Category breakdown
+  const cats = [
+    { icon: '\u{1F4AA}', name: 'Prote\u00EDna >100g/d\u00EDa', count: proteinDays, total: scoredDays, color: 'var(--green)' },
+    { icon: '\u{1F3CB}\uFE0F', name: 'Entrenos / actividad completada', count: workoutDays, total: scoredDays, color: 'var(--orange)' },
+    { icon: '\u{1F48A}', name: 'Suplementos (2+ al d\u00EDa)', count: suppDays, total: scoredDays, color: 'var(--blue)' },
+    { icon: '\u{1F4A4}', name: 'Protocolo de sue\u00F1o', count: sleepDays, total: scoredDays, color: 'var(--purple)' },
+  ];
+  const catGrid = document.getElementById('wsCatGrid');
+  if (catGrid) {
+    catGrid.innerHTML = '';
+    cats.forEach(cat => {
+      const pct = cat.total > 0 ? Math.round(cat.count / cat.total * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'ws-cat-row';
+      row.innerHTML =
+        '<div class="ws-cat-icon">' + cat.icon + '</div>' +
+        '<div class="ws-cat-info">' +
+          '<div class="ws-cat-name">' + cat.name + '</div>' +
+          '<div class="ws-cat-bar-bg"><div class="ws-cat-bar-fill" style="width:' + pct + '%;background:' + cat.color + '"></div></div>' +
+        '</div>' +
+        '<div class="ws-cat-count">' + cat.count + '/' + cat.total + '</div>';
+      catGrid.appendChild(row);
+    });
+  }
+
+  // Streak
+  const streakWrap = document.getElementById('wsStreakWrap');
+  if (streakWrap) {
+    streakWrap.innerHTML =
+      '<div class="ws-streak-num">' + streakCount + '</div>' +
+      '<div class="ws-streak-info">' +
+        '<div class="ws-streak-label">D\u00EDas consecutivos \u2265 50% cumplimiento</div>' +
+        '<div class="ws-streak-sub">Esta semana \u00B7 usa el dashboard mensual para ver racha total</div>' +
+      '</div>';
+  }
+}
+
+
 // ============================================================
 // NAVIGATION + DRAWER
 // ============================================================
@@ -3425,6 +3704,10 @@ function navigateTo(section, subpage) {
   }
 
   currentSection = section;
+  // Rebuild week summary when opening semana page
+  if (section === 'diario' && subpage === 'semana') {
+    setTimeout(buildWeeklySummary, 50);
+  }
   closeDrawer();
 }
 
@@ -3455,6 +3738,7 @@ function showPage_diario(id) {
 function showPage(id) {
   showPage_diario(id);
   currentDiarioPage = id;
+  if (id === 'semana') setTimeout(buildWeeklySummary, 50);
   // Update drawer active state
   document.querySelectorAll('.drawer-item').forEach(i => i.classList.remove('active'));
   const navEl = document.getElementById('nav-diario-' + id);
@@ -3624,6 +3908,7 @@ function buildWeekGrid() {
   ];
 
   const grid = document.getElementById('weekGrid');
+  if (!grid) return;
   grid.innerHTML = '';
 
   for (let i = 0; i < 7; i++) {
@@ -3898,7 +4183,7 @@ function renderAll() {
   // Meal chips restored inside buildMealGrid()
 
   // Whey extra
-  if (state.wheyExtra && wheyBtn) {
+  if (state.wheyExtra && wheyBtn && wheyBtn.innerHTML !== undefined) {
     wheyBtn.classList.add('active');
     wheyBtn.innerHTML = '✓ Whey post-pádel tomado (+25g)';
   }
@@ -4019,6 +4304,7 @@ function getCurrentData() {
 
 // ---- RENDER ----
 function renderDash() {
+  if (!document.getElementById('monthLabel')) return;
   document.getElementById('monthLabel').textContent = getMonthLabel(currentMonth);
   const data = getCurrentData();
 
@@ -4178,6 +4464,7 @@ function calcScore(items) {
 
 function buildMuscleHistory() {
   const container = document.getElementById('muscleHistory');
+  if (!container) return;
   container.innerHTML = '';
   const monthNames = ['May','Jun','Jul','Ago','Sep','Oct','Nov'];
   const target = 44.0;
@@ -4254,6 +4541,9 @@ function showToastDash(msg) {
   loadAllRemote().then(() => renderDash());
   loadStateRemote();
 })();
+
+
+
 
 
 
