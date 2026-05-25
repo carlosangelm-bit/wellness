@@ -200,6 +200,7 @@ body {
   padding-top: 52px;
   min-height: 100vh;
   animation: fadeIn 0.2s ease;
+  overflow-x: hidden;
 }
 .app-section.active { display: block; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
@@ -322,7 +323,7 @@ body {
 }
 
 /* PAGES */
-.page { display: none; padding: 72px 16px 40px; width: 100%; box-sizing: border-box; }
+.page { display: none; padding: 4px 0 40px; width: 100%; box-sizing: border-box; }
 .page.active { display: block; }
 
 /* SECTION HEADERS */
@@ -1696,14 +1697,14 @@ body {
 #section-dashboard .header { padding-top: 24px; }
 
 /* Diario page padding */
-#section-diario .page { padding-top: 72px; }
+#section-diario .page { padding-top: 0; }
 
 
 /* WEEK CIRCLE NAVIGATOR */
 .week-strip-wrap {
   display: flex; align-items: center;
-  padding: 14px 16px 8px;
-  gap: 6px;
+  padding: 8px 12px 4px;
+  gap: 4px;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
@@ -1767,6 +1768,98 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   .week-strip-wrap { padding: 12px 10px 6px; gap: 4px; }
   .week-strip { gap: 2px; }
 }
+
+
+/* TIMELINE */
+.tl-day-header {
+  padding: 8px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tl-day-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.tl-day-subtitle {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-top: 2px;
+}
+.tl-prot-pill {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 10px;
+  font-family: 'Syne Mono', monospace; font-size: 10px;
+  color: var(--green); transition: color 0.3s;
+  white-space: nowrap;
+}
+.timeline-wrap {
+  padding: 6px 10px 8px;
+  display: flex; flex-direction: column;
+}
+.tl-event {
+  display: flex; align-items: stretch;
+  cursor: pointer; gap: 0;
+}
+.tl-time-col {
+  width: 42px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  align-items: flex-end; padding-right: 8px; padding-top: 11px;
+}
+.tl-time {
+  font-family: 'Syne Mono', monospace;
+  font-size: 10px; color: var(--muted); white-space: nowrap;
+}
+.tl-spine-col {
+  width: 20px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+}
+.tl-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--border2); background: var(--s2);
+  flex-shrink: 0; margin-top: 9px; z-index: 1;
+  transition: all 0.2s;
+}
+.tl-event.done .tl-dot { background: var(--green); border-color: var(--green); }
+.tl-event.type-activity .tl-dot { border-color: var(--orange); }
+.tl-event.type-activity.done .tl-dot { background: var(--orange); border-color: var(--orange); }
+.tl-event.type-supplement .tl-dot { border-color: var(--blue); }
+.tl-event.type-supplement.done .tl-dot { background: var(--blue); border-color: var(--blue); }
+.tl-event.type-sleep .tl-dot { border-color: var(--purple); }
+.tl-event.type-sleep.done .tl-dot { background: var(--purple); border-color: var(--purple); }
+.tl-line {
+  width: 2px; flex: 1; background: var(--border); min-height: 12px;
+}
+.tl-content {
+  flex: 1; min-width: 0;
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px;
+  margin: 3px 0 3px 6px; transition: all 0.15s;
+}
+.tl-event:hover .tl-content { border-color: var(--border2); }
+.tl-event.done .tl-content { border-color: rgba(168,255,87,0.25); background: rgba(168,255,87,0.04); }
+.tl-event.type-activity.done .tl-content { border-color: rgba(255,159,67,0.3); background: rgba(255,159,67,0.04); }
+.tl-event.type-supplement.done .tl-content { border-color: rgba(79,195,247,0.3); background: rgba(79,195,247,0.04); }
+.tl-event.type-sleep.done .tl-content { border-color: rgba(179,157,219,0.3); background: rgba(179,157,219,0.04); }
+.tl-content-top {
+  display: flex; align-items: center; gap: 6px;
+}
+.tl-icon { font-size: 13px; flex-shrink: 0; }
+.tl-title { font-weight: 600; font-size: 12px; color: var(--text); flex: 1; min-width: 0; }
+.tl-prot { font-family: 'Syne Mono', monospace; font-size: 10px; color: var(--green); white-space: nowrap; }
+.tl-detail { font-size: 10px; color: var(--muted); margin-top: 2px; padding-left: 17px; line-height: 1.35; }
+.tl-now-row {
+  display: flex; align-items: center; pointer-events: none; padding: 3px 0;
+}
+.tl-now-spacer { width: 62px; flex-shrink: 0; }
+.tl-now-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); flex-shrink: 0; margin-right: 4px; }
+.tl-now-line { flex: 1; height: 1px; background: var(--red); opacity: 0.5; }
+.tl-now-label { font-family: 'Syne Mono', monospace; font-size: 9px; color: var(--red); padding-left: 4px; white-space: nowrap; }
+
+
+/* COMPACT HOY PAGE */
+#page-hoy { padding-top: 0 !important; }
+#page-hoy .week-strip-wrap { padding-top: 10px; }
 
 </style>
 </head>
@@ -1861,102 +1954,28 @@ html, body { overflow-x: hidden; max-width: 100vw; }
     <button class="week-strip-arrow" onclick="shiftWeek(1)">&#8250;</button>
   </div>
 
-  <div class="sec-label">registro diario</div>
-  <div class="page-title">¿Cómo vas hoy?</div>
-
-  <!-- PROTEIN TRACKER -->
-  <div class="card">
-    <div class="card-title">
-      <span style="color:var(--green)">◉</span> Proteína del día
-    </div>
-    <div class="prot-ring-wrapper">
-      <div class="prot-ring">
-        <svg width="90" height="90" viewBox="0 0 90 90">
-          <circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/>
-          <circle id="protCircle" cx="45" cy="45" r="36" fill="none" stroke="#a8ff57"
-            stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="226" stroke-dashoffset="226"
-            style="transition: stroke-dashoffset 0.5s ease;"/>
-        </svg>
-        <div class="prot-ring-text">
-          <div class="prot-ring-val" id="protVal">0</div>
-          <div class="prot-ring-unit">/ 154g</div>
-        </div>
+  <!-- DAY HEADER -->
+  <div class="tl-day-header">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="tl-day-title" id="tlDayTitle">—</div>
+        <div class="tl-day-subtitle" id="tlDaySubtitle">—</div>
       </div>
-      <div class="prot-info">
-        <div class="prot-goal">Meta diaria: <strong style="color:var(--text)">154g proteína</strong></div>
-        <div class="prot-remaining" id="protRemaining">Te faltan 154g</div>
-        <div style="margin-top:8px; font-size:11px; color:var(--muted)">Toca cada comida cuando la termines</div>
-      </div>
-    </div>
-
-    <div class="meal-grid" id="mealGrid">
-      <!-- Filled dynamically by buildMealGrid() -->
+      <div class="tl-prot-pill" id="tlProtPill">0 / 154g proteína</div>
     </div>
   </div>
 
-  <!-- SUPLEMENTOS -->
-  <div class="card">
-    <div class="card-title">
-      <span style="color:var(--blue)">◉</span> Suplementos
-    </div>
-    <div class="supp-row">
-      <div class="supp-name-wrap">
-        <div class="supp-name-text">Creatina 5g</div>
-        <div class="supp-timing-text">Con el whey — todos los días</div>
-      </div>
-      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
-    </div>
-    <div class="supp-row">
-      <div class="supp-name-wrap">
-        <div class="supp-name-text">Vitamina D3 + K2</div>
-        <div class="supp-timing-text">Con desayuno (con grasa)</div>
-      </div>
-      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
-    </div>
-    <div class="supp-row">
-      <div class="supp-name-wrap">
-        <div class="supp-name-text">Omega-3 EPA/DHA</div>
-        <div class="supp-timing-text">Con comida principal</div>
-      </div>
-      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
-    </div>
-    <div class="supp-row">
-      <div class="supp-name-wrap">
-        <div class="supp-name-text">Magnesio Glicinato 400mg</div>
-        <div class="supp-timing-text">30-60 min antes de dormir</div>
-      </div>
-      <button class="toggle-btn" onclick="toggleSupp(this)"></button>
-    </div>
+  <!-- TIMELINE -->
+  <div class="timeline-wrap" id="timelineWrap">
+    <!-- Built dynamically by buildTimeline() -->
   </div>
 
-  <!-- ESTRÉS -->
-  <div class="card">
-    <div class="card-title">
-      <span style="color:var(--orange)">◉</span> Nivel de estrés hoy
-    </div>
-    <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">El estrés eleva cortisol → suprime testosterona → frena ganancia muscular</div>
-    <div class="stress-scale">
-      <button class="stress-btn" onclick="selectStress(1, this)">1</button>
-      <button class="stress-btn" onclick="selectStress(2, this)">2</button>
-      <button class="stress-btn" onclick="selectStress(3, this)">3</button>
-      <button class="stress-btn" onclick="selectStress(4, this)">4</button>
-      <button class="stress-btn" onclick="selectStress(5, this)">5</button>
-    </div>
-    <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--muted); font-family:'Syne Mono',monospace; padding: 0 2px;">
-      <span>Tranquilo</span><span>Moderado</span><span>Alto</span>
-    </div>
+  <!-- NOTES -->
+  <div style="padding: 0 16px 32px;">
+    <textarea class="notes-area" id="dailyNotes" placeholder="Nota del día — cómo te sentiste, algo que ajustar..."></textarea>
+    <button class="save-btn" onclick="saveDay()">Guardar día</button>
   </div>
 
-  <!-- NOTAS -->
-  <div class="card">
-    <div class="card-title">
-      <span style="color:var(--purple)">◉</span> Nota del día
-    </div>
-    <textarea class="notes-area" id="dailyNotes" placeholder="Cómo te sentiste en el entreno, qué comiste, algo que notar..."></textarea>
-  </div>
-
-  <button class="save-btn" onclick="saveDay()">Guardar registro del día</button>
 </div>
 
 <!-- PAGE: RESTAURANTES -->
@@ -3125,6 +3144,12 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 
 <div class="toast" id="toast"></div>
 <script>
+
+
+
+
+
+
 // ============================================================
 // SUPABASE
 // ============================================================
@@ -3485,24 +3510,8 @@ function getToday() {
 
 // ---- PROTEIN RING ----
 function updateProtein() {
-  const total = state.proteinTotal;
-  const target = 154;
-  const pct = Math.min(total / target, 1);
-  const circumference = 226;
-  const offset = circumference - (pct * circumference);
-
-  document.getElementById('protCircle').style.strokeDashoffset = offset;
-  document.getElementById('protVal').textContent = total;
-
-  const remaining = Math.max(target - total, 0);
-  const el = document.getElementById('protRemaining');
-  if (remaining === 0) {
-    el.textContent = '¡Meta alcanzada! 🎯';
-    el.style.color = 'var(--green)';
-  } else {
-    el.textContent = `Te faltan ${remaining}g`;
-    el.style.color = 'var(--orange)';
-  }
+  // Legacy ring elements removed - use updateProteinPill() instead
+  updateProteinPill();
 }
 
 // ---- MEALS ----
@@ -3594,12 +3603,7 @@ function showRest(id, btn) {
 }
 
 // ---- NAV ----
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  event.target.classList.add('active');
-}
+// showPage handled by navigation wrapper above
 
 // ---- WEEK GRID ----
 function buildWeekGrid() {
@@ -3673,81 +3677,187 @@ function setDate() {
 }
 
 // ============================================================
-// DYNAMIC MEAL GRID
+// DAY SCHEDULE + TIMELINE
 // ============================================================
-const DAY_MEALS = {
-  0: { title: 'Domingo — Descanso', meals: [
-    { name: 'Desayuno', icon: '☀️', prot: 25, cal: '3 huevos + frijoles + fruta', key: 'desayuno' },
-    { name: 'Comida libre', icon: '🍽️', prot: 35, cal: 'Proteína como base del plato', key: 'comida' },
-    { name: 'Cena', icon: '🌙', prot: 20, cal: 'Cottage 150g o huevo + aguacate', key: 'cena' },
-  ]},
-  1: { title: 'Lunes — Pesas Push', meals: [
-    { name: 'Whey post-entreno', icon: '🥤', prot: 25, cal: '1 scoop + creatina 5g · inmediato', key: 'whey_entreno' },
-    { name: 'Desayuno', icon: '☀️', prot: 25, cal: '3 huevos + frijoles + fruta', key: 'desayuno' },
-    { name: 'Comida (casa papás)', icon: '🍽️', prot: 38, cal: '150g carne/pollo/pescado + ensalada', key: 'comida' },
-    { name: 'Cena proteica', icon: '🌙', prot: 30, cal: '2 huevos + cottage 150g + tortilla', key: 'cena' },
-  ]},
-  2: { title: 'Martes — Golf 9 hoyos', meals: [
-    { name: 'Pre-golf (6:45am)', icon: '⚡', prot: 25, cal: 'Plátano + 1 scoop whey con agua', key: 'pre_golf' },
-    { name: 'Desayuno post-golf', icon: '☀️', prot: 25, cal: '3 huevos + frijoles + fruta', key: 'desayuno' },
-    { name: 'Comida (Toño / Sushito)', icon: '🍽️', prot: 32, cal: 'Caldo tlalpeño o edamame + salmón', key: 'comida' },
-    { name: 'Cena ligera', icon: '🌙', prot: 18, cal: 'Quesadilla o sándwich', key: 'cena' },
-  ]},
-  3: { title: 'Miércoles — Pesas Pull', meals: [
-    { name: 'Whey post-entreno', icon: '🥤', prot: 25, cal: '1 scoop + creatina 5g · inmediato', key: 'whey_entreno' },
-    { name: 'Desayuno', icon: '☀️', prot: 25, cal: '3 huevos + frijoles + fruta', key: 'desayuno' },
-    { name: 'Comida (Toño / Sushito)', icon: '🍽️', prot: 38, cal: 'Edamame + Salmón flameado o Caldo tlalpeño', key: 'comida' },
-    { name: 'Cena proteica', icon: '🌙', prot: 28, cal: 'Atún 120g + aguacate + tostadas', key: 'cena' },
-  ]},
-  4: { title: 'Jueves — Pádel', meals: [
-    { name: 'Desayuno', icon: '☀️', prot: 35, cal: '3 huevos + frijoles + yogurt griego 150g', key: 'desayuno' },
-    { name: 'Comida (restaurante)', icon: '🍽️', prot: 40, cal: 'Hunan / Nostos / Suntory', key: 'comida' },
-    { name: 'Snack pre-pádel', icon: '🎾', prot: 3, cal: 'Plátano + nueces · 1hr antes', key: 'snack_padel' },
-    { name: 'Whey post-pádel', icon: '🥤', prot: 25, cal: '1 scoop inmediato al terminar', key: 'whey_padel' },
-  ]},
-  5: { title: 'Viernes — Golf 18 hoyos', meals: [
-    { name: 'Pre-golf (6:45am)', icon: '⚡', prot: 25, cal: 'Plátano + 1 scoop whey con agua', key: 'pre_golf' },
-    { name: 'Snack hoyo 9 (~10am)', icon: '⛳', prot: 15, cal: 'Plátano + barra proteína >15g · OBLIGATORIO', key: 'snack_golf' },
-    { name: 'Desayuno post-golf', icon: '☀️', prot: 25, cal: '3 huevos + frijoles + aguacate', key: 'desayuno' },
-    { name: 'Comida libre', icon: '🍽️', prot: 30, cal: 'Proteína como base · viernes libre', key: 'comida' },
-  ]},
-  6: { title: 'Sábado — Pesas Legs', meals: [
-    { name: 'Whey post-entreno', icon: '🥤', prot: 25, cal: '1 scoop + creatina 5g · inmediato', key: 'whey_entreno' },
-    { name: 'Desayuno grande', icon: '☀️', prot: 30, cal: '4 huevos + frijoles + aguacate + fruta', key: 'desayuno' },
-    { name: 'Comida principal', icon: '🍽️', prot: 50, cal: '200g proteína animal + arroz + verduras', key: 'comida' },
-    { name: 'Cena pre-sueño', icon: '🌙', prot: 25, cal: 'Cottage 200g + nueces · caseína nocturna', key: 'cena' },
-  ]},
+
+// ============================================================
+// DAY SCHEDULE — Timeline per day of week
+// ============================================================
+// types: 'activity' | 'meal' | 'supplement' | 'sleep'
+// checkable: true = user can mark as done
+const DAY_SCHEDULE = {
+  0: { title: 'Domingo', subtitle: 'Descanso activo', color: '#5a6070',
+    events: [
+      { time: '7:30', type: 'meal', icon: '☀️', title: 'Desayuno', detail: '3 huevos + frijoles + fruta', prot: 25, key: 'desayuno' },
+      { time: '14:00', type: 'meal', icon: '\u{1F37D}️', title: 'Comida libre', detail: 'Proteína como base del plato', prot: 35, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg + Omega-3 + D3', prot: 0, key: 'supps_night' },
+      { time: '21:00', type: 'meal', icon: '\u{1F319}', title: 'Cena pre-sueño', detail: '2 latas atún + tomate + aguacate + aceitunas', prot: 54, key: 'cena' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep · Magnesio ya tomado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  1: { title: 'Lunes', subtitle: 'Pesas — Push', color: '#a8ff57',
+    events: [
+      { time: '6:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos mañana', detail: 'D3 5000UI + K2 + Omega-3 con desayuno', prot: 0, key: 'supps_morning' },
+      { time: '6:45', type: 'meal', icon: '⚡', title: 'Pre-entreno', detail: 'Licuado: plátano + berries + whey + agua', prot: 25, key: 'pre_entreno' },
+      { time: '7:30', type: 'activity', icon: '\u{1F3CB}️', title: 'Pesas — Push', detail: 'Pecho · Hombros · Tríceps · RPE 7-8', prot: 0, key: 'workout' },
+      { time: '8:30', type: 'meal', icon: '\u{1F964}', title: 'Whey + Creatina', detail: '1 scoop whey + 5g creatina · inmediato', prot: 25, key: 'whey_post' },
+      { time: '9:00', type: 'meal', icon: '☀️', title: 'Desayuno', detail: '3 huevos + frijoles + fruta', prot: 25, key: 'desayuno' },
+      { time: '14:00', type: 'meal', icon: '\u{1F37D}️', title: 'Comida (casa papás)', detail: '150g carne/pollo/pescado + ensalada', prot: 38, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg', prot: 0, key: 'supps_night' },
+      { time: '21:00', type: 'meal', icon: '\u{1F319}', title: 'Cena proteica', detail: '2 latas atún + tomate + aguacate + aceitunas', prot: 54, key: 'cena' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  2: { title: 'Martes', subtitle: 'Golf 9 hoyos', color: '#4fc3f7',
+    events: [
+      { time: '6:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos mañana', detail: 'D3 5000UI + K2 + Omega-3', prot: 0, key: 'supps_morning' },
+      { time: '6:45', type: 'meal', icon: '⚡', title: 'Pre-golf', detail: 'Licuado: plátano + berries + whey + agua', prot: 25, key: 'pre_golf' },
+      { time: '7:30', type: 'activity', icon: '⛳', title: 'Golf — 9 hoyos', detail: 'Zona 2 · ~90 min · Hidratación 500ml/hr', prot: 0, key: 'golf' },
+      { time: '9:30', type: 'meal', icon: '☀️', title: 'Desayuno post-golf', detail: '3 huevos + frijoles + fruta', prot: 25, key: 'desayuno' },
+      { time: '10:00', type: 'supplement', icon: '\u{1F48A}', title: 'Creatina', detail: '5g con agua o jugo', prot: 0, key: 'creatina' },
+      { time: '14:00', type: 'meal', icon: '\u{1F37D}️', title: 'Comida (Toño / Sushito)', detail: 'Caldo tlalpeño o edamame + salmón', prot: 32, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg', prot: 0, key: 'supps_night' },
+      { time: '21:00', type: 'meal', icon: '\u{1F319}', title: 'Cena ligera', detail: 'Quesadilla o sándwich', prot: 18, key: 'cena' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  3: { title: 'Miércoles', subtitle: 'Pesas — Pull', color: '#a8ff57',
+    events: [
+      { time: '6:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos mañana', detail: 'D3 5000UI + K2 + Omega-3', prot: 0, key: 'supps_morning' },
+      { time: '6:45', type: 'meal', icon: '⚡', title: 'Pre-entreno', detail: 'Licuado: plátano + berries + whey + agua', prot: 25, key: 'pre_entreno' },
+      { time: '7:30', type: 'activity', icon: '\u{1F3CB}️', title: 'Pesas — Pull', detail: 'Espalda · Bíceps · Core · RPE 7-8', prot: 0, key: 'workout' },
+      { time: '8:30', type: 'meal', icon: '\u{1F964}', title: 'Whey + Creatina', detail: '1 scoop whey + 5g creatina · inmediato', prot: 25, key: 'whey_post' },
+      { time: '9:00', type: 'meal', icon: '☀️', title: 'Desayuno', detail: '3 huevos + frijoles + fruta', prot: 25, key: 'desayuno' },
+      { time: '14:00', type: 'meal', icon: '\u{1F37D}️', title: 'Comida (Toño / Sushito)', detail: 'Edamame + Salmón flameado o Caldo tlalpeño', prot: 38, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg', prot: 0, key: 'supps_night' },
+      { time: '21:00', type: 'meal', icon: '\u{1F319}', title: 'Cena proteica', detail: '2 latas atún + tomate + aguacate + aceitunas', prot: 54, key: 'cena' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  4: { title: 'Jueves', subtitle: 'Pádel', color: '#ff9f43',
+    events: [
+      { time: '7:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos mañana', detail: 'D3 5000UI + K2 + Omega-3', prot: 0, key: 'supps_morning' },
+      { time: '8:00', type: 'meal', icon: '☀️', title: 'Desayuno', detail: '3 huevos + frijoles + yogurt griego 150g', prot: 35, key: 'desayuno' },
+      { time: '14:00', type: 'meal', icon: '\u{1F37D}️', title: 'Comida (restaurante)', detail: 'Hunan / Nostos / Suntory', prot: 40, key: 'comida' },
+      { time: '18:30', type: 'meal', icon: '\u{1F3BE}', title: 'Snack pre-pádel', detail: 'Plátano + nueces · 1hr antes', prot: 3, key: 'snack_padel' },
+      { time: '19:30', type: 'activity', icon: '\u{1F3BE}', title: 'Pádel', detail: 'Alta intensidad · ~130 min · Hidratación', prot: 0, key: 'padel' },
+      { time: '22:00', type: 'meal', icon: '\u{1F964}', title: 'Whey + Creatina', detail: '1 scoop whey + 5g creatina · inmediato', prot: 25, key: 'whey_post' },
+      { time: '23:00', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  5: { title: 'Viernes', subtitle: 'Golf 18 hoyos', color: '#4fc3f7',
+    events: [
+      { time: '6:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos ma\u00F1ana', detail: 'D3 5000UI + K2 + Omega-3', prot: 0, key: 'supps_morning' },
+      { time: '6:45', type: 'meal', icon: '\u{26A1}', title: 'Pre-golf', detail: 'Licuado: pl\u00E1tano + berries + whey + agua', prot: 25, key: 'pre_golf' },
+      { time: '7:40', type: 'activity', icon: '\u{26F3}', title: 'Golf \u2014 Primeros 9 hoyos', detail: 'Zona 2 \u00B7 Hidrataci\u00F3n 500ml/hr', prot: 0, key: 'golf_1' },
+      { time: '10:00', type: 'meal', icon: '\u{2600}\uFE0F', title: 'Desayuno entre hoyos', detail: '3 huevos + frijoles + aguacate \u00B7 antes de los segundos 9', prot: 25, key: 'desayuno' },
+      { time: '10:40', type: 'activity', icon: '\u{26F3}', title: 'Golf \u2014 Segundos 9 hoyos', detail: 'Zona 2 \u00B7 Hidrataci\u00F3n 500ml/hr', prot: 0, key: 'golf_2' },
+      { time: '13:00', type: 'meal', icon: '\u{1F964}', title: 'Whey + Creatina', detail: '1 scoop whey + 5g creatina \u00B7 inmediato al terminar', prot: 25, key: 'whey_post' },
+      { time: '14:30', type: 'meal', icon: '\u{1F374}', title: 'Comida libre', detail: 'Prote\u00EDna como base \u00B7 viernes libre', prot: 30, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg', prot: 0, key: 'supps_night' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F4A4}', title: 'Protocolo sue\u00F1o', detail: 'Sin pantallas \u00B7 Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
+  6: { title: 'Sábado', subtitle: 'Pesas — Legs', color: '#a8ff57',
+    events: [
+      { time: '6:30', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos mañana', detail: 'D3 5000UI + K2 + Omega-3', prot: 0, key: 'supps_morning' },
+      { time: '6:45', type: 'meal', icon: '⚡', title: 'Pre-entreno', detail: 'Licuado: plátano + berries + whey + agua', prot: 25, key: 'pre_entreno' },
+      { time: '7:30', type: 'activity', icon: '\u{1F3CB}️', title: 'Pesas — Legs', detail: 'Peso muerto · Sentadilla búlgara · Hip thrust · RPE 7-8', prot: 0, key: 'workout' },
+      { time: '8:45', type: 'meal', icon: '\u{1F964}', title: 'Whey + Creatina', detail: '1 scoop whey + 5g creatina · inmediato', prot: 25, key: 'whey_post' },
+      { time: '9:00', type: 'meal', icon: '☀️', title: 'Desayuno grande', detail: '4 huevos + frijoles + aguacate + fruta', prot: 30, key: 'desayuno' },
+      { time: '14:30', type: 'meal', icon: '\u{1F37D}️', title: 'Comida principal', detail: '200g proteína animal + arroz + verduras', prot: 50, key: 'comida' },
+      { time: '20:00', type: 'supplement', icon: '\u{1F48A}', title: 'Suplementos noche', detail: 'Magnesio 400mg', prot: 0, key: 'supps_night' },
+      { time: '21:00', type: 'meal', icon: '\u{1F319}', title: 'Cena pre-sueño', detail: '2 latas atún + tomate + aguacate + aceitunas', prot: 54, key: 'cena' },
+      { time: '22:30', type: 'sleep', icon: '\u{1F634}', title: 'Protocolo sueño', detail: 'Sin pantallas · Eight Sleep configurado', prot: 0, key: 'sleep_protocol' },
+    ]
+  },
 };
 
-function buildMealGrid() {
-  const grid = document.getElementById('mealGrid');
-  if (!grid) return;
+function buildTimeline() {
+  const wrap = document.getElementById('timelineWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
   const d = getOffsetDate(dayOffset);
   const dow = d.getDay();
-  const config = DAY_MEALS[dow];
-  if (!config) return;
-  grid.innerHTML = '';
-  config.meals.forEach(meal => {
-    const chip = document.createElement('div');
-    chip.className = 'meal-chip' + (state.meals && state.meals[meal.key] ? ' checked' : '');
-    chip.dataset.name = meal.key;
-    chip.onclick = function() { toggleMeal(this, meal.prot); };
-    chip.innerHTML =
-      '<div class="meal-chip-name">' + meal.icon + ' ' + meal.name + '</div>' +
-      '<div class="meal-chip-prot">+' + meal.prot + 'g</div>' +
-      '<div class="meal-chip-cal">' + meal.cal + '</div>';
-    grid.appendChild(chip);
+  const schedule = DAY_SCHEDULE[dow];
+  if (!schedule) return;
+  const titleEl = document.getElementById('tlDayTitle');
+  const subEl = document.getElementById('tlDaySubtitle');
+  if (titleEl) { titleEl.textContent = schedule.title; titleEl.style.color = schedule.color || 'var(--text)'; }
+  if (subEl) subEl.textContent = schedule.subtitle;
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const isToday = dayOffset === 0;
+  let nowInserted = false;
+  schedule.events.forEach((ev, i) => {
+    const parts = ev.time.split(':');
+    const evMins = parseInt(parts[0]) * 60 + (parseInt(parts[1]) || 0);
+    if (isToday && !nowInserted && evMins > nowMins) {
+      wrap.appendChild(makeNowRow(now));
+      nowInserted = true;
+    }
+    const isDone = !!(state.meals && state.meals[ev.key] !== undefined);
+    const isLast = i === schedule.events.length - 1;
+    const row = document.createElement('div');
+    row.className = 'tl-event type-' + ev.type + (isDone ? ' done' : '');
+    row.onclick = (function(r, e) { return function() { toggleTimelineEvent(r, e); }; })(row, ev);
+    row.innerHTML =
+      '<div class="tl-time-col"><span class="tl-time">' + ev.time + '</span></div>' +
+      '<div class="tl-spine-col"><div class="tl-dot"></div>' + (isLast ? '' : '<div class="tl-line"></div>') + '</div>' +
+      '<div class="tl-content">' +
+        '<div class="tl-content-top">' +
+          '<span class="tl-icon">' + ev.icon + '</span>' +
+          '<span class="tl-title">' + ev.title + '</span>' +
+          (ev.prot > 0 ? '<span class="tl-prot">+' + ev.prot + 'g</span>' : '') +
+        '</div>' +
+        '<div class="tl-detail">' + ev.detail + '</div>' +
+      '</div>';
+    wrap.appendChild(row);
   });
-  const titleEl = document.querySelector('#page-hoy .page-title');
-  if (titleEl) titleEl.textContent = config.title;
+  if (isToday && !nowInserted) wrap.appendChild(makeNowRow(now));
+  updateProteinPill();
+}
+
+function makeNowRow(now) {
+  const nr = document.createElement('div');
+  nr.className = 'tl-now-row';
+  const nh = String(now.getHours()).padStart(2,'0');
+  const nm = String(now.getMinutes()).padStart(2,'0');
+  nr.innerHTML = '<div class="tl-now-spacer"></div><div class="tl-now-dot"></div><div class="tl-now-line"></div><div class="tl-now-label">' + nh + ':' + nm + ' ahora</div>';
+  return nr;
+}
+
+function toggleTimelineEvent(row, ev) {
+  const isDone = row.classList.toggle('done');
+  state.meals = state.meals || {};
+  if (isDone) {
+    state.meals[ev.key] = ev.prot;
+    if (ev.prot > 0) state.proteinTotal = (state.proteinTotal || 0) + ev.prot;
+  } else {
+    const had = state.meals[ev.key] || 0;
+    delete state.meals[ev.key];
+    if (had > 0) state.proteinTotal = Math.max(0, (state.proteinTotal || 0) - had);
+  }
+  updateProteinPill();
+  saveState();
+  showToast(isDone ? (ev.prot > 0 ? '+' + ev.prot + 'g proteína' : '✓ Listo') : 'Desmarcado');
+}
+
+function updateProteinPill() {
+  const total = state.proteinTotal || 0;
+  const el = document.getElementById('tlProtPill');
+  if (!el) return;
+  el.textContent = total + ' / 154g proteína';
+  el.style.color = total >= 154 ? 'var(--green)' : total >= 100 ? 'var(--orange)' : 'var(--muted)';
+  el.style.borderColor = total >= 154 ? 'rgba(168,255,87,0.3)' : '';
 }
 
 
 // ---- RENDER ALL ----
 function renderAll() {
   // ── RESET ALL UI FIRST ──────────────────────────────────────
-  // Rebuild meal grid for current day (this also resets chips)
-  buildMealGrid();
+  // Rebuild timeline for current day
+  buildTimeline();
 
   // Whey extra button
   const wheyBtn = document.getElementById('wheyExtra');
@@ -3777,9 +3887,13 @@ function renderAll() {
 
   // ── RESTORE FROM STATE ────────────────────────────────────────
   updateProtein();
-  updateSleep();
-  updateSleepHrs();
-  updateWeekMetrics();
+  // Sleep/week metrics only update if elements are present
+  const swsEl = document.getElementById('swsInput');
+  if (swsEl) updateSleep();
+  const sleepHrsEl = document.getElementById('sleepHrsInput');
+  if (sleepHrsEl) updateSleepHrs();
+  const sleepProtEl = document.getElementById('sleepProtocolVal');
+  if (sleepProtEl) updateWeekMetrics();
 
   // Meal chips restored inside buildMealGrid()
 
@@ -3854,11 +3968,11 @@ const METRICS = {
 };
 
 const PHASES = [
-  { name: 'Recomposición', icon: '🔥', range: 'Meses 1–3', color: '#39ff85',
+  { name: 'Recomposición', icon: '\u{1F525}', range: 'Meses 1–3', color: '#39ff85',
     desc: 'Reducir grasa visceral, aumentar proteína, elevar HRV. Calorías en mantenimiento (~2,750 kcal).' },
-  { name: 'Lean Bulk', icon: '💪', range: 'Meses 4–6', color: '#fbbf24',
+  { name: 'Lean Bulk', icon: '\u{1F4AA}', range: 'Meses 4–6', color: '#fbbf24',
     desc: 'Una vez visceral en nivel 5-6. Superávit de 200-300 kcal. Aquí crece el músculo de verdad.' },
-  { name: 'Consolidación', icon: '🎯', range: 'Meses 7–12', color: '#c084fc',
+  { name: 'Consolidación', icon: '\u{1F3AF}', range: 'Meses 7–12', color: '#c084fc',
     desc: 'Periodización ondulante. Maximizar fuerza relativa y definición. SMMI objetivo: 12.3 kg/m².' },
 ];
 
@@ -4136,9 +4250,16 @@ function showToastDash(msg) {
   setTopbarDate();
   setDate();
   buildWeekStrip();
+  buildTimeline();
   loadAllRemote().then(() => renderDash());
   loadStateRemote();
 })();
+
+
+
+
+
+
 
 </script>
 </body>
